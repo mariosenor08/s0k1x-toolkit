@@ -387,7 +387,7 @@ show_splash_screen() {
         echo "Current size: ${cols}x${lines}"
         sleep 2
         return
-    }
+    fi
 
     clear
     local mid_row=$((lines/2))
@@ -585,6 +585,9 @@ install_tool() {
     local max_retries=3
     local retry_count=0
     
+    # Log installation attempt
+    log_info "Intentando instalar $tool_name en la categoría $category"
+    
     # Get tool information
     local tool_info
     case "$category" in
@@ -600,60 +603,94 @@ install_tool() {
         "misc") tool_info="${miscellaneous_tools[$tool_name]}" ;;
         "search") tool_info="${search_engines_tools[$tool_name]}" ;;
         "verification") tool_info="${account_verification_tools[$tool_name]}" ;;
+        "financial") tool_info="${financial_analysis_tools[$tool_name]}" ;;
+        "asset") tool_info="${asset_tracking_tools[$tool_name]}" ;;
+        "human") tool_info="${human_rights_tools[$tool_name]}" ;;
+        "conflict") tool_info="${conflict_monitoring_tools[$tool_name]}" ;;
+        "terrorism") tool_info="${terrorism_monitoring_tools[$tool_name]}" ;;
+        "darkweb") tool_info="${darkweb_monitoring_tools[$tool_name]}" ;;
+        "email") tool_info="${email_tools[$tool_name]}" ;;
+        *)
+            log_error "Categoría desconocida: $category"
+            return 1
+            ;;
     esac
+    
+    if [ -z "$tool_info" ]; then
+        log_error "No se encontró información para la herramienta $tool_name"
+        return 1
+    fi
     
     IFS='|' read -r name description repo_url <<< "$tool_info"
     
-    if [ -n "$repo_url" ]; then
-        while [ $retry_count -lt $max_retries ]; do
-            # Create directory if it doesn't exist
-            mkdir -p "$tool_dir"
-            
-            # Download tool
-            if [[ "$repo_url" == *.git ]]; then
-                if ! git clone --depth 1 "$repo_url" "$tool_dir"; then
-                    ((retry_count++))
-                    continue
-                fi
-            else
-                if ! wget -q -O "$tool_dir/$tool_name" "$repo_url"; then
-                    ((retry_count++))
-                    continue
-                fi
+    if [ -z "$repo_url" ]; then
+        log_error "URL del repositorio no disponible para $tool_name"
+        return 1
+    fi
+    
+    # Create directory if it doesn't exist
+    if ! mkdir -p "$tool_dir"; then
+        log_error "No se pudo crear el directorio para $tool_name"
+        return 1
+    fi
+    
+    while [ $retry_count -lt $max_retries ]; do
+        log_info "Intento $((retry_count + 1)) de $max_retries para instalar $tool_name"
+        
+        if [[ "$repo_url" == *.git ]]; then
+            if git clone --depth 1 "$repo_url" "$tool_dir" 2>/dev/null; then
+                log_success "Repositorio clonado exitosamente: $tool_name"
+                break
             fi
-            
-            # Install dependencies
-            if [ -f "$tool_dir/requirements.txt" ]; then
-                pip3 install -r "$tool_dir/requirements.txt"
+        else
+            if wget -q -O "$tool_dir/$tool_name" "$repo_url"; then
+                log_success "Herramienta descargada exitosamente: $tool_name"
+                break
             fi
-            
-            # Make executable if needed
-            if [ -f "$tool_dir/$tool_name" ]; then
-                chmod +x "$tool_dir/$tool_name"
-            fi
-            
-            # Create launcher script
-            cat > "$tool_dir/launch.sh" << EOF
+        fi
+        
+        ((retry_count++))
+        log_warn "Intento $retry_count fallido para $tool_name"
+        sleep 2
+    done
+    
+    if [ $retry_count -eq $max_retries ]; then
+        log_error "No se pudo instalar $tool_name después de $max_retries intentos"
+        return 1
+    fi
+    
+    # Install dependencies if requirements.txt exists
+    if [ -f "$tool_dir/requirements.txt" ]; then
+        log_info "Instalando dependencias para $tool_name"
+        if ! pip3 install -r "$tool_dir/requirements.txt"; then
+            log_error "Error al instalar dependencias para $tool_name"
+            return 1
+        fi
+    fi
+    
+    # Make executable if needed
+    if [ -f "$tool_dir/$tool_name" ]; then
+        chmod +x "$tool_dir/$tool_name"
+    fi
+    
+    # Create launcher script
+    cat > "$tool_dir/launch.sh" << EOF
 #!/bin/bash
 cd "$tool_dir"
 if [ -f "$tool_name" ]; then
-    ./$tool_name
+    ./$tool_name "\$@"
 elif [ -f "main.py" ]; then
-    python3 main.py
+    python3 main.py "\$@"
 elif [ -f "index.html" ]; then
     python3 -m http.server 8000
 else
     echo "No se pudo encontrar el punto de entrada de la herramienta"
+    exit 1
 fi
 EOF
-            chmod +x "$tool_dir/launch.sh"
-            
-            return 0
-        done
-        
-        return 1
-    fi
     
+    chmod +x "$tool_dir/launch.sh"
+    log_success "Herramienta $tool_name instalada exitosamente"
     return 0
 }
 
@@ -672,34 +709,28 @@ show_main_menu() {
     echo -e "${BLUE}${BORDER_MIDDLE}${NC}"
     
     # Menu Categories
-    local categories=(
-        "Escaneo de Red|${MAGNIFIER}|network"
-        "Escaneo de Vulnerabilidades|${TARGET}|vulnerability"
-        "Descifrado de Contraseñas|${KEY}|password"
-        "Explotación|${SWORD}|exploitation"
-        "Sniffing de Paquetes|${SATELLITE}|packet"
-        "Hacking Inalámbrico|${WIFI}|wireless"
-        "Hacking de Aplicaciones Web|${GLOBE}|webapp"
-        "Forense|${MAGNIFIER}|forensics"
-        "Ingeniería Social|${USER}|social"
-        "Varios|${TOOLS}|misc"
-        "Configuración|${WRENCH}|config"
-        "Salir|${CROSS}|exit"
-    )
-    
-    local idx=1
-    for category in "${categories[@]}"; do
-        IFS='|' read -r name icon type <<< "$category"
-        printf "${BLUE}${BORDER_SIDE}${NC} ${icon} ${GREEN}[%2d]${NC} %-30s" $idx "$name"
-        if [ $((idx % 2)) -eq 0 ]; then
-            echo -e "${BLUE}${BORDER_SIDE}${NC}"
-        fi
-        ((idx++))
-    done
-    
-    if [ $((idx % 2)) -eq 0 ]; then
-        echo -e "${BLUE}${BORDER_SIDE}${NC}"
-    fi
+    echo -e "${GREEN}1.${NC} Herramientas de Red"
+    echo -e "${GREEN}2.${NC} Herramientas de Vulnerabilidades"
+    echo -e "${GREEN}3.${NC} Herramientas de Contraseñas"
+    echo -e "${GREEN}4.${NC} Herramientas de Explotación"
+    echo -e "${GREEN}5.${NC} Herramientas de Paquetes"
+    echo -e "${GREEN}6.${NC} Herramientas Inalámbricas"
+    echo -e "${GREEN}7.${NC} Herramientas Web"
+    echo -e "${GREEN}8.${NC} Herramientas Forenses"
+    echo -e "${GREEN}9.${NC} Herramientas de Ingeniería Social"
+    echo -e "${GREEN}10.${NC} Motores de Búsqueda"
+    echo -e "${GREEN}11.${NC} Verificación de Cuentas"
+    echo -e "${GREEN}12.${NC} Análisis Financiero"
+    echo -e "${GREEN}13.${NC} Seguimiento de Activos"
+    echo -e "${GREEN}14.${NC} Derechos Humanos"
+    echo -e "${GREEN}15.${NC} Monitoreo de Conflictos"
+    echo -e "${GREEN}16.${NC} Monitoreo de Terrorismo"
+    echo -e "${GREEN}17.${NC} Monitoreo de Dark Web"
+    echo -e "${GREEN}18.${NC} Herramientas de Email"
+    echo -e "${GREEN}19.${NC} Herramientas Varias"
+    echo -e "${GREEN}20.${NC} Configuración"
+    echo -e "${GREEN}21.${NC} Actualizar Toolkit"
+    echo -e "${GREEN}22.${NC} Salir"
     
     echo -e "${BLUE}${BORDER_BOTTOM}${NC}"
     echo -e "\n${YELLOW}${ARROW} Seleccione una opción: ${NC}"
@@ -709,17 +740,32 @@ show_main_menu() {
 show_category_menu() {
     local category=$1
     local title=$2
-    local tools=("${@:3}")
+    local -n tools=$3
+    
+    # Validate parameters
+    if [ -z "$category" ] || [ -z "$title" ]; then
+        log_error "Parámetros inválidos en show_category_menu"
+        return 1
+    fi
+    
+    # Check if tools array is empty
+    if [ ${#tools[@]} -eq 0 ]; then
+        log_warn "No hay herramientas disponibles en la categoría $category"
+        echo -e "${YELLOW}${WARNING} No hay herramientas disponibles en esta categoría${NC}"
+        echo -e "\n${YELLOW}Presione ENTER para continuar...${NC}"
+        read
+        return 0
+    }
     
     # Check terminal size
     local cols=$(tput cols)
     local lines=$(tput lines)
     if [ "$cols" -lt 80 ] || [ "$lines" -lt 24 ]; then
-        echo -e "${RED}${ERROR} Terminal too small. Minimum size: 80x24${NC}"
-        echo "Current size: ${cols}x${lines}"
+        echo -e "${RED}${ERROR} Terminal demasiado pequeña. Tamaño mínimo: 80x24${NC}"
+        echo "Tamaño actual: ${cols}x${lines}"
         sleep 2
-        return
-    }
+        return 1
+    fi
     
     while true; do
         clear
@@ -728,14 +774,23 @@ show_category_menu() {
         echo -e "${BLUE}${BORDER_MIDDLE}${NC}"
         
         local idx=1
-        for tool in "${tools[@]}"; do
-            IFS='|' read -r name description <<< "$tool"
+        for tool in "${!tools[@]}"; do
+            IFS='|' read -r name description repo_url <<< "${tools[$tool]}"
             # Truncate description if too long
             local max_desc_length=$((cols - 20))
             if [ ${#description} -gt $max_desc_length ]; then
                 description="${description:0:$max_desc_length}..."
             fi
-            echo -e "${BLUE}${BORDER_SIDE}${NC} ${GREEN}[$idx]${NC} $name - ${WHITE}$description${NC}"
+            
+            # Check if tool is installed
+            local status_icon
+            if [ -d "$TOOLS_DIR/$category/$tool" ]; then
+                status_icon="${GREEN}${CHECK}${NC}"
+            else
+                status_icon="${RED}${CROSS}${NC}"
+            fi
+            
+            echo -e "${BLUE}${BORDER_SIDE}${NC} $status_icon ${GREEN}[$idx]${NC} $name - ${WHITE}$description${NC}"
             ((idx++))
         done
         
@@ -743,15 +798,15 @@ show_category_menu() {
         echo -e "${BLUE}${BORDER_SIDE}${NC} ${GREEN}[0]${NC} Volver al menú principal"
         echo -e "${BLUE}${BORDER_BOTTOM}${NC}"
         
-        echo -e "\n${YELLOW}${ARROW} Seleccione una herramienta: ${NC}"
+        echo -e "\n${YELLOW}${ARROW} Seleccione una herramienta (0-$((idx-1))): ${NC}"
         read -r option
         
         case $option in
             0) return ;;
             [1-9]|[1-9][0-9])
                 if [ "$option" -le "${#tools[@]}" ]; then
-                    IFS='|' read -r name description <<< "${tools[$((option-1))]}"
-                    run_tool "$category" "$name"
+                    local tool_name=$(echo "${!tools[@]}" | cut -d' ' -f$option)
+                    run_tool "$category" "$tool_name"
                 else
                     echo -e "${RED}${ERROR} Opción inválida${NC}"
                     sleep 1
@@ -1636,18 +1691,28 @@ main() {
         read -r option
         
         case $option in
-            1) show_category_menu "network" "Herramientas de Escaneo de Red" "${network_scanning_tools[@]}" ;;
-            2) show_category_menu "vulnerability" "Herramientas de Escaneo de Vulnerabilidades" "${vulnerability_scanning_tools[@]}" ;;
-            3) show_category_menu "password" "Herramientas de Descifrado de Contraseñas" "${password_cracking_tools[@]}" ;;
+            1) show_category_menu "network" "Herramientas de Red" "${network_scanning_tools[@]}" ;;
+            2) show_category_menu "vulnerability" "Herramientas de Vulnerabilidades" "${vulnerability_scanning_tools[@]}" ;;
+            3) show_category_menu "password" "Herramientas de Contraseñas" "${password_cracking_tools[@]}" ;;
             4) show_category_menu "exploitation" "Herramientas de Explotación" "${exploitation_tools[@]}" ;;
-            5) show_category_menu "packet" "Herramientas de Sniffing de Paquetes" "${packet_sniffing_tools[@]}" ;;
-            6) show_category_menu "wireless" "Herramientas de Hacking Inalámbrico" "${wireless_hacking_tools[@]}" ;;
-            7) show_category_menu "webapp" "Herramientas de Hacking de Aplicaciones Web" "${web_app_hacking_tools[@]}" ;;
+            5) show_category_menu "packet" "Herramientas de Paquetes" "${packet_sniffing_tools[@]}" ;;
+            6) show_category_menu "wireless" "Herramientas Inalámbricas" "${wireless_hacking_tools[@]}" ;;
+            7) show_category_menu "webapp" "Herramientas Web" "${web_app_hacking_tools[@]}" ;;
             8) show_category_menu "forensics" "Herramientas Forenses" "${forensics_tools[@]}" ;;
             9) show_category_menu "social" "Herramientas de Ingeniería Social" "${social_engineering_tools[@]}" ;;
-            10) show_category_menu "misc" "Herramientas Varias" "${miscellaneous_tools[@]}" ;;
-            11) handle_settings_menu ;;
-            12) cleanup_and_exit 0 ;;
+            10) show_category_menu "search" "Motores de Búsqueda" "${search_engines_tools[@]}" ;;
+            11) show_category_menu "verification" "Verificación de Cuentas" "${account_verification_tools[@]}" ;;
+            12) show_category_menu "financial" "Análisis Financiero" "${financial_analysis_tools[@]}" ;;
+            13) show_category_menu "asset" "Seguimiento de Activos" "${asset_tracking_tools[@]}" ;;
+            14) show_category_menu "human" "Derechos Humanos" "${human_rights_tools[@]}" ;;
+            15) show_category_menu "conflict" "Monitoreo de Conflictos" "${conflict_monitoring_tools[@]}" ;;
+            16) show_category_menu "terrorism" "Monitoreo de Terrorismo" "${terrorism_monitoring_tools[@]}" ;;
+            17) show_category_menu "darkweb" "Monitoreo de Dark Web" "${darkweb_monitoring_tools[@]}" ;;
+            18) show_category_menu "email" "Herramientas de Email" "${email_tools[@]}" ;;
+            19) show_category_menu "misc" "Herramientas Varias" "${miscellaneous_tools[@]}" ;;
+            20) handle_settings_menu ;;
+            21) update_tools ;;
+            22) cleanup_and_exit 0 ;;
             *)
                 echo -e "${RED}${ERROR} Opción inválida${NC}"
                 sleep 1
