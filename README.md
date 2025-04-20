@@ -1,206 +1,201 @@
-# SOKIX Toolkit - Professional Security Suite
+# SOKIX Toolkit - Professional Edition
 
-![SOKIX Banner](https://i.imgur.com/example.png)
+![SOKIX Toolkit](https://img.shields.io/badge/Version-5.0.0-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Platform](https://img.shields.io/badge/Platform-Kali%20Linux-orange)
+![Status](https://img.shields.io/badge/Status-Active-brightgreen)
 
 ## Overview
 
-SOKIX Toolkit is an enterprise-grade security and penetration testing suite designed for cybersecurity professionals, researchers, and ethical hackers. The toolkit provides a comprehensive collection of security tools organized into specialized categories, featuring advanced memory analysis, process inspection, and file analysis capabilities.
+SOKIX Toolkit is a comprehensive, professional-grade security toolkit designed for ethical hackers, penetration testers, and security professionals. Built specifically for Kali Linux, it provides a robust framework for conducting security assessments, penetration testing, and vulnerability analysis.
 
-## Key Features
+## Features
 
-- 🛡️ **Professional Architecture**
-  - Modular design with clear function separation
-  - Comprehensive error handling and logging
-  - Configuration management with YAML support
-  - Strict mode for better error detection
-  - Directory structure following Linux FHS
+### Core Capabilities
+- 🛡️ Advanced security assessment tools
+- 🔍 Comprehensive vulnerability scanning
+- 📊 Detailed reporting and analytics
+- 🔐 Secure configuration management
+- 🚀 Performance optimization
+- 📈 Real-time monitoring
 
-- 🎨 **Advanced Visual Interface**
-  - Animated splash screen with professional logo
-  - Dynamic progress bars with spinners
-  - Color-coded output for different message types
-  - Unicode characters for better visual feedback
-  - Professional menu system with categories
+### Tool Categories
+1. **Exploitation Tools**
+   - Metasploit Framework
+   - Exploit Database
+   - SQL Injection Tools
+   - Password Cracking Tools
 
-- 🛠️ **Intelligent Tool Management**
-  - Automatic tool installation and updates
-  - Dependency management with virtual environments
-  - Tool integrity verification
-  - Repository validation and fallback methods
-  - Proper permission handling
+2. **Network Security**
+   - Network Scanners
+   - Packet Analyzers
+   - MITM Tools
+   - Wireless Security Tools
 
-- 🔒 **Security Features**
-  - Root privilege checking
-  - System requirement validation
-  - Secure file permissions
-  - Log rotation
-  - Temporary file cleanup
+3. **Web Security**
+   - Web Application Scanners
+   - CMS Security Tools
+   - API Security Tools
+   - Web Proxy Tools
 
-- 📊 **Monitoring and Logging**
-  - Detailed logging system
-  - Operation timing
-  - Success/failure tracking
-  - System information display
-  - Tool status monitoring
+4. **Forensic Analysis**
+   - Memory Analysis
+   - Disk Forensics
+   - Network Forensics
+   - Malware Analysis
 
-## System Requirements
+5. **OSINT Tools**
+   - Information Gathering
+   - Social Media Analysis
+   - Email Verification
+   - Account Verification
 
-- **Operating System**: Kali Linux 2024.1 or later
-- **Python**: 3.11 or higher
-- **RAM**: Minimum 4GB (8GB recommended)
-- **Storage**: 20GB available space
-- **Permissions**: Root access required
-- **Network**: Stable internet connection
+6. **Mobile Security**
+   - Android Security
+   - iOS Security
+   - Mobile App Analysis
+   - Mobile Network Security
+
+7. **Cloud Security**
+   - AWS Security
+   - Azure Security
+   - GCP Security
+   - Cloud Infrastructure Security
 
 ## Installation
 
-1. Clone the repository:
-```bash
-git clone https://github.com/sokix/sokix-toolkit.git
-cd sokix-toolkit
-```
+### Prerequisites
+- Kali Linux 2023.x or later
+- Minimum 8GB RAM
+- Minimum 100GB disk space
+- 8 CPU cores recommended
+- Internet connection
 
-2. Set execution permissions:
+### Quick Start
 ```bash
+# Clone the repository
+git clone https://github.com/sokix/toolkit.git
+
+# Navigate to the toolkit directory
+cd toolkit
+
+# Make the script executable
 chmod +x sokix_toolkit.sh
+
+# Run the toolkit
+./sokix_toolkit.sh
 ```
 
-3. Run as root:
+### Advanced Installation
 ```bash
-sudo ./sokix_toolkit.sh
-```
+# Install with custom configuration
+./sokix_toolkit.sh --install --config custom_config.yaml
 
-## Tool Categories
+# Install specific modules
+./sokix_toolkit.sh --install --modules web,network,forensics
 
-### Core Security Tools
-1. **Exploitation Tools**
-   - Metasploit Framework
-   - SQLMap
-   - BeEF
-   - Empire
-   - Koadic
-
-2. **Network Analysis**
-   - Wireshark
-   - Nmap
-   - Bettercap
-   - Responder
-   - Netcat
-
-3. **Web Security**
-   - Burp Suite
-   - Nikto
-   - WPScan
-   - DirBuster
-   - SQLMap
-
-4. **Forensics**
-   - Autopsy
-   - Volatility
-   - The Sleuth Kit
-   - Foremost
-   - Scalpel
-
-5. **Cryptography**
-   - John the Ripper
-   - Hashcat
-   - OpenSSL
-   - GnuPG
-   - Steghide
-
-### Advanced Analysis Tools
-1. **Memory Analysis**
-   - Cheat Engine
-   - PINCE
-   - AceTheGame
-   - Memory.dll
-   - ReClass.NET
-
-2. **Process Analysis**
-   - x64dbg
-   - Frida
-   - Process Hacker
-   - Process Monitor
-   - API Monitor
-
-3. **File Analysis**
-   - PE Explorer
-   - IDA Pro
-   - Ghidra
-   - Binary Ninja
-   - Radare2
-
-## Directory Structure
-
-```
-sokix_toolkit/
-├── tools/
-│   ├── exploitation/
-│   ├── network/
-│   ├── web/
-│   ├── forensics/
-│   ├── crypto/
-│   ├── memory/
-│   ├── process/
-│   └── file/
-├── logs/
-│   ├── toolkit.log
-│   └── error.log
-├── config/
-│   └── config.yaml
-└── temp/
+# Install with performance optimization
+./sokix_toolkit.sh --install --optimize
 ```
 
 ## Usage
 
-1. Launch the toolkit:
+### Basic Commands
 ```bash
-sudo ./sokix_toolkit.sh
+# Start the toolkit
+./sokix_toolkit.sh
+
+# Update the toolkit
+./sokix_toolkit.sh --update
+
+# Backup configuration
+./sokix_toolkit.sh --backup
+
+# Restore from backup
+./sokix_toolkit.sh --restore backup_file.tar.gz
 ```
 
-2. Navigate through the menu system:
-   - Use arrow keys or numbers to select options
-   - Press Enter to confirm selection
-   - Press 'q' to quit current menu
+### Advanced Usage
+```bash
+# Run specific module
+./sokix_toolkit.sh --module web --tool nikto
 
-3. Tool Execution:
-   - Select tool category
-   - Choose specific tool
-   - Follow on-screen instructions
-   - View execution logs
+# Generate report
+./sokix_toolkit.sh --report --format pdf
+
+# Configure settings
+./sokix_toolkit.sh --config --set proxy.enabled=true
+```
+
+## Configuration
+
+### Main Configuration File
+```yaml
+# /etc/sokix/config.yaml
+version: 5.0.0
+update_check: true
+auto_backup: true
+max_log_size: 100M
+debug_mode: false
+proxy_enabled: false
+proxy_address: ""
+
+modules:
+  enabled: true
+  auto_update: true
+  cache_enabled: true
+
+security:
+  encryption_enabled: true
+  backup_encryption: true
+  audit_logging: true
+
+performance:
+  max_threads: 4
+  cache_size: 1G
+  compression_level: 6
+```
+
+## Security Considerations
+
+- 🔒 All tools are configured with security best practices
+- 🛡️ Automatic security updates
+- 🔐 Encrypted configuration storage
+- 📝 Comprehensive audit logging
+- 🚫 Strict access controls
 
 ## Contributing
 
 We welcome contributions from the security community. Please follow these guidelines:
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
-### Contribution Guidelines
-- Follow PEP 8 style guide for Python code
-- Include comprehensive documentation
-- Add appropriate error handling
-- Test thoroughly before submission
-- Update README.md if necessary
-
-## Security Considerations
-
-- Use only in authorized environments
-- Follow ethical hacking guidelines
-- Respect privacy and data protection laws
-- Document all testing activities
-- Maintain proper logging
+### Code Standards
+- Follow PEP 8 for Python code
+- Use meaningful variable names
+- Include comprehensive comments
+- Write unit tests for new features
 
 ## Support
 
-For support, please:
-1. Check the documentation
-2. Search existing issues
-3. Create a new issue if needed
-4. Join our Discord community
+### Documentation
+- [User Guide](docs/user_guide.md)
+- [API Documentation](docs/api.md)
+- [Troubleshooting Guide](docs/troubleshooting.md)
+
+### Community
+- [Discord Server](https://discord.gg/sokix)
+- [GitHub Discussions](https://github.com/sokix/toolkit/discussions)
+- [Security Blog](https://blog.sokix.org)
+
+### Professional Support
+- Email: support@sokix.org
+- Website: https://sokix.org
+- Phone: +1 (555) 123-4567
 
 ## License
 
@@ -210,5 +205,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Kali Linux Team
 - Open Source Security Community
-- All Contributors
-- Security Researchers 
+- All Contributors and Maintainers
+
+## Disclaimer
+
+This toolkit is intended for legal and ethical security testing only. Users are responsible for ensuring they have proper authorization before conducting any security testing. The developers are not responsible for any misuse or illegal activities conducted with this toolkit.
+
+---
+
+<div align="center">
+  <sub>Built with ❤️ by the SOKIX Security Team</sub>
+</div> 

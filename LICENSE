@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2024 SOKIX Toolkit
+Copyright (c) 2024 SOKIX Security Team
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -12,9 +12,9 @@ furnished to do so, subject to the following conditions:
 1. The above copyright notice and this permission notice shall be included in all
    copies or substantial portions of the Software.
 
-2. The Software shall be used only for legitimate security testing, research,
-   and educational purposes. Any use of the Software for illegal activities,
-   unauthorized access, or malicious purposes is strictly prohibited.
+2. The Software shall be used for ethical purposes only. Any use of the Software
+   for illegal activities, unauthorized penetration testing, or any form of
+   cybercrime is strictly prohibited.
 
 3. The Software is provided "as is", without warranty of any kind, express or
    implied, including but not limited to the warranties of merchantability,
@@ -29,25 +29,25 @@ furnished to do so, subject to the following conditions:
    - Computer Fraud and Abuse Act (CFAA)
    - General Data Protection Regulation (GDPR)
    - California Consumer Privacy Act (CCPA)
-   - Other relevant data protection and privacy laws
+   - Other relevant cybersecurity and privacy laws
 
-5. The Software may include third-party components that are subject to their
-   own licenses. Users must comply with the terms of these licenses.
+5. The Software is intended for:
+   - Security professionals
+   - Ethical hackers
+   - Penetration testers
+   - Security researchers
+   - System administrators
+   - Other authorized security personnel
 
-6. Users must obtain proper authorization before using the Software to test
-   systems or networks that they do not own or have explicit permission to test.
+6. The Software must not be used to:
+   - Conduct unauthorized penetration testing
+   - Perform illegal hacking activities
+   - Compromise systems without explicit permission
+   - Violate privacy rights
+   - Conduct any form of cybercrime
 
-7. The authors and contributors of the Software are not responsible for any
-   misuse or damage caused by the Software.
-
-8. Users must maintain proper documentation of their testing activities and
-   obtain necessary permissions before conducting any security testing.
-
-9. The Software is not intended for use in production environments without
-   proper security review and authorization.
-
-10. Users must report any security vulnerabilities found in the Software to
-    the maintainers through proper channels.
+By using the Software, you agree to these terms and conditions. If you do not
+agree with these terms, you are not permitted to use the Software.
 
 For questions about this license, please contact:
 - Email: legal@sokix.com
