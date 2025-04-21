@@ -11,6 +11,67 @@
 
 SOKIX Toolkit is a comprehensive, professional-grade ethical hacking environment designed for security professionals, penetration testers, and cybersecurity researchers. This toolkit provides a robust framework for conducting authorized security assessments, vulnerability research, and penetration testing.
 
+## System Requirements
+
+### Minimum Requirements
+- **Memory (RAM)**: 4GB minimum, 8GB recommended
+  - Required for running security tools
+  - Sufficient for basic operations and testing
+  - More may be needed for multiple tools simultaneously
+
+- **Storage**: 20GB minimum, 50GB recommended
+  - Base installation: ~5GB
+  - Tool repositories: ~8GB
+  - Wordlists and databases: ~3GB
+  - Cache and temporary files: ~2GB
+  - Project workspace: ~2GB
+
+- **Processor**: 2 cores minimum, 4 cores recommended
+  - Intel i3/i5 or AMD Ryzen 3/5 or better
+  - Support for virtualization (VT-x/AMD-V)
+  - 2.0GHz base clock speed minimum
+
+- **Operating System**:
+  - Windows 10/11 (64-bit)
+  - Linux (Ubuntu 20.04+, Debian 10+, Kali Linux)
+  - macOS 10.15+
+
+- **Network**:
+  - Stable internet connection
+  - Minimum 10Mbps download speed
+  - Support for IPv4/IPv6
+
+### Recommended Requirements
+- **Memory (RAM)**: 32GB
+  - For advanced penetration testing
+  - Multiple virtual machines
+  - Large-scale network scanning
+  - Advanced password cracking
+
+- **Storage**: 500GB SSD
+  - Faster tool execution
+  - Quick access to large databases
+  - Better performance for disk-intensive operations
+  - Space for multiple projects
+
+- **Processor**: 12+ cores
+  - Intel i9 or AMD Ryzen 9
+  - Higher clock speeds for better performance
+  - Support for advanced virtualization features
+
+- **Graphics**: Dedicated GPU
+  - For password cracking acceleration
+  - Machine learning operations
+  - Advanced visualization tools
+
+### Additional Requirements
+- Virtualization support enabled in BIOS
+- Administrative/root access
+- Latest graphics drivers
+- Updated system firmware
+- Antivirus exclusions for toolkit directories
+- Firewall rules for security tools
+
 ## Features
 
 ### Core Capabilities
@@ -152,7 +213,7 @@ We welcome contributions from the security community. Please read our [Contribut
 - Hours: 24/7
 
 ### Community Support
-- [Discord](https://discord.gg/sokix)
+- [Discord](https://discord.gg/NRvZScvs)
 - [Forum](https://forum.sokix.com)
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/sokix)
 
@@ -173,10 +234,7 @@ This toolkit is intended for authorized security testing and research purposes o
 
 ## Contact
 
-- Website: [https://sokix.com](https://sokix.com)
-- Email: contact@sokix.com
-- Twitter: [@SOKIXSecurity](https://twitter.com/SOKIXSecurity)
-- LinkedIn: [SOKIX Security](https://linkedin.com/company/sokix-security)
+- Email: kosideveloper@gmail.com
 
 ---
 

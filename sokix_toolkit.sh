@@ -1051,7 +1051,8 @@ show_progress() {
     
     echo -ne "\r${COLORS['CYAN']}["
     for ((i=0; i<progress; i++)); do
-        echo -ne "${ANIMATIONS['hacking'][$((i % ${#ANIMATIONS['hacking'][@]}))]}"
+        local animation_index=$((i % ${#ANIMATIONS['hacking']}))
+        echo -ne "${ANIMATIONS['hacking'][$animation_index]}"
     done
     for ((i=0; i<remaining; i++)); do
         echo -ne " "
