@@ -1034,12 +1034,18 @@ check_os() {
 # Función para verificar memoria RAM
 check_memory() {
     local min_ram=4000  # 4GB en MB
+    local recommended_ram=8000  # 8GB en MB
     local total_ram=$(free -m | awk '/^Mem:/{print $2}')
     
-    if [ "$total_ram" -ge "$min_ram" ]; then
+    if [ "$total_ram" -ge "$recommended_ram" ]; then
         return 0
+    elif [ "$total_ram" -ge "$min_ram" ]; then
+        echo -e "${COLORS['YELLOW']}${UNICODE['WARNING']} Memoria RAM insuficiente (${total_ram}MB). Se recomiendan al menos ${recommended_ram}MB${COLORS['NC']}"
+        return 1
+    else
+        echo -e "${COLORS['RED']}${UNICODE['ERROR']} Memoria RAM insuficiente (${total_ram}MB). Mínimo requerido: ${min_ram}MB${COLORS['NC']}"
+        return 2
     fi
-    return 1
 }
 
 # Función para verificar almacenamiento
@@ -1174,43 +1180,89 @@ check_performance() {
 }
 
 check_dependencies() {
-    # Check required dependencies
-    local missing_deps=()
     for dep in "${REQUIRED_DEPENDENCIES[@]}"; do
-        if ! command -v "$dep" &> /dev/null; then
-            missing_deps+=("$dep")
+        if ! command -v "$dep" >/dev/null 2>&1; then
+            echo -e "${COLORS['YELLOW']}${UNICODE['WARNING']} $dep no está instalado${COLORS['NC']}"
+            install_dependency "$dep"
         fi
     done
-    
-    if [ ${#missing_deps[@]} -gt 0 ]; then
-        echo -e "${COLORS['RED']}Missing dependencies: ${missing_deps[*]}${COLORS['NC']}"
-        return 1
-    fi
-    return 0
 }
 
 check_tools() {
-    # Check if required tools are installed
     local missing_tools=()
+    local installed_tools=()
+    
     for tool in "${REQUIRED_TOOLS[@]}"; do
         if ! command -v "$tool" &> /dev/null; then
             missing_tools+=("$tool")
+        else
+            installed_tools+=("$tool")
         fi
     done
     
     if [ ${#missing_tools[@]} -gt 0 ]; then
-        echo -e "${COLORS['RED']}Missing tools: ${missing_tools[*]}${COLORS['NC']}"
-        return 1
+        echo -e "${COLORS['YELLOW']}${UNICODE['WARNING']} Herramientas faltantes: ${missing_tools[*]}${COLORS['NC']}"
+        echo -e "${COLORS['CYAN']}Intentando instalar herramientas faltantes...${COLORS['NC']}"
+        
+        for tool in "${missing_tools[@]}"; do
+            install_dependency "$tool"
+        done
+        
+        # Verificar nuevamente después de la instalación
+        local still_missing=()
+        for tool in "${missing_tools[@]}"; do
+            if ! command -v "$tool" &> /dev/null; then
+                still_missing+=("$tool")
+            fi
+        done
+        
+        if [ ${#still_missing[@]} -gt 0 ]; then
+            echo -e "${COLORS['RED']}${UNICODE['ERROR']} No se pudieron instalar las siguientes herramientas: ${still_missing[*]}${COLORS['NC']}"
+            return 1
+        fi
     fi
+    
+    echo -e "${COLORS['GREEN']}${UNICODE['SUCCESS']} Herramientas instaladas: ${installed_tools[*]}${COLORS['NC']}"
     return 0
 }
 
 check_permissions() {
-    # Check file permissions
-    if [ ! -w "$LOG_FILE" ]; then
-        echo -e "${COLORS['RED']}Cannot write to log file${COLORS['NC']}"
-        return 1
+    local log_dir=$(dirname "$LOG_FILE")
+    
+    # Verificar y crear directorio de logs si no existe
+    if [ ! -d "$log_dir" ]; then
+        mkdir -p "$log_dir" || {
+            echo -e "${COLORS['RED']}${UNICODE['ERROR']} No se pudo crear el directorio de logs${COLORS['NC']}"
+            return 1
+        }
     fi
+    
+    # Verificar permisos del directorio de logs
+    if [ ! -w "$log_dir" ]; then
+        echo -e "${COLORS['YELLOW']}${UNICODE['WARNING']} Intentando corregir permisos del directorio de logs...${COLORS['NC']}"
+        sudo chown -R "$(whoami)" "$log_dir" || {
+            echo -e "${COLORS['RED']}${UNICODE['ERROR']} No se pudo corregir los permisos del directorio de logs${COLORS['NC']}"
+            return 1
+        }
+    }
+    
+    # Verificar y crear archivo de log si no existe
+    if [ ! -f "$LOG_FILE" ]; then
+        touch "$LOG_FILE" || {
+            echo -e "${COLORS['RED']}${UNICODE['ERROR']} No se pudo crear el archivo de log${COLORS['NC']}"
+            return 1
+        }
+    }
+    
+    # Verificar permisos del archivo de log
+    if [ ! -w "$LOG_FILE" ]; then
+        echo -e "${COLORS['YELLOW']}${UNICODE['WARNING']} Intentando corregir permisos del archivo de log...${COLORS['NC']}"
+        sudo chown "$(whoami)" "$LOG_FILE" || {
+            echo -e "${COLORS['RED']}${UNICODE['ERROR']} No se pudo corregir los permisos del archivo de log${COLORS['NC']}"
+            return 1
+        }
+    }
+    
     return 0
 }
 
@@ -1226,8 +1278,8 @@ show_progress() {
     
     echo -ne "\r${COLORS['CYAN']}["
     for ((i=0; i<progress; i++)); do
-        local animation_index=$((i % ${#hacking_animation}))
-        echo -ne "${hacking_animation:$animation_index:1}"
+        local animation_index=$((i % ${#ANIMATIONS['hacking']}))
+        echo -ne "${ANIMATIONS['hacking']:$animation_index:1}"
     done
     for ((i=0; i<remaining; i++)); do
         echo -ne " "
@@ -1248,45 +1300,32 @@ load_module() {
     fi
 }
 
-# Función para verificar dependencias
-check_dependencies() {
-    local dependencies=(
-        "python3"
-        "git"
-        "java"
-        "ruby"
-        "perl"
-        "gcc"
-        "make"
-        "wget"
-        "curl"
-        "nmap"
-        "sqlmap"
-        "metasploit-framework"
-    )
-    
-    for dep in "${dependencies[@]}"; do
-        if ! command -v "$dep" >/dev/null 2>&1; then
-            echo -e "${COLORS['YELLOW']}${UNICODE['WARNING']} $dep no está instalado${COLORS['NC']}"
-            install_dependency "$dep"
-        fi
-    done
-}
-
 # Función para instalar dependencias
 install_dependency() {
     local dep=$1
     echo -e "${COLORS['CYAN']}Instalando $dep...${COLORS['NC']}"
     
     if command -v apt-get >/dev/null 2>&1; then
-        sudo apt-get install -y "$dep"
+        sudo apt-get update && sudo apt-get install -y "$dep" || {
+            echo -e "${COLORS['RED']}${UNICODE['ERROR']} Error al instalar $dep con apt-get${COLORS['NC']}"
+            return 1
+        }
     elif command -v yum >/dev/null 2>&1; then
-        sudo yum install -y "$dep"
+        sudo yum install -y "$dep" || {
+            echo -e "${COLORS['RED']}${UNICODE['ERROR']} Error al instalar $dep con yum${COLORS['NC']}"
+            return 1
+        }
     elif command -v pacman >/dev/null 2>&1; then
-        sudo pacman -S --noconfirm "$dep"
+        sudo pacman -S --noconfirm "$dep" || {
+            echo -e "${COLORS['RED']}${UNICODE['ERROR']} Error al instalar $dep con pacman${COLORS['NC']}"
+            return 1
+        }
     else
-        echo -e "${COLORS['RED']}${UNICODE['ERROR']} No se pudo instalar $dep${COLORS['NC']}"
+        echo -e "${COLORS['RED']}${UNICODE['ERROR']} No se pudo determinar el gestor de paquetes${COLORS['NC']}"
+        return 1
     fi
+    
+    return 0
 }
 
 # Función para configurar el entorno
@@ -1312,6 +1351,7 @@ initialize_tools() {
     local tools=($(ls "$TOOLS_DIR"))
     local total_tools=${#tools[@]}
     local current_tool=0
+    local failed_tools=()
     
     for tool in "${tools[@]}"; do
         current_tool=$((current_tool + 1))
@@ -1327,9 +1367,21 @@ initialize_tools() {
         done
         echo -ne "] Inicializando $tool...${COLORS['NC']}"
         
-        install_tool "$tool"
+        if ! install_tool "$tool"; then
+            failed_tools+=("$tool")
+        fi
     done
-    echo
+    
+    # Mostrar resumen de inicialización
+    echo -e "\n${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['CYAN']}Resumen de inicialización:${COLORS['NC']} ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}Herramientas inicializadas: $((total_tools - ${#failed_tools[@]}))${COLORS['NC']} ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    
+    if [ ${#failed_tools[@]} -gt 0 ]; then
+        echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['RED']}Herramientas fallidas: ${failed_tools[*]}${COLORS['NC']} ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    fi
+    
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_BOTTOM']}${COLORS['NC']}"
 }
 
 # Función para encontrar el archivo principal de una herramienta
@@ -1363,11 +1415,19 @@ find_main_file() {
 run_tool() {
     local tool_name=$1
     local tool_dir="$TOOLS_DIR/$tool_name"
+    shift  # Eliminar el primer argumento (nombre de la herramienta)
+    local args=("$@")  # Resto de argumentos
     
     if [ ! -d "$tool_dir" ]; then
         echo -e "${COLORS['RED']}${UNICODE['ERROR']} La herramienta $tool_name no está instalada${COLORS['NC']}"
         return 1
-    fi
+    }
+    
+    # Verificar si la herramienta ya está en ejecución
+    if pgrep -f "$tool_name" > /dev/null; then
+        echo -e "${COLORS['YELLOW']}${UNICODE['WARNING']} $tool_name ya está en ejecución${COLORS['NC']}"
+        return 1
+    }
     
     echo -e "${COLORS['CYAN']}${UNICODE['TERMINAL']} Ejecutando $tool_name...${COLORS['NC']}"
     
@@ -1376,45 +1436,76 @@ run_tool() {
     
     if [ -z "$main_file" ]; then
         echo -e "${COLORS['RED']}${UNICODE['ERROR']} No se encontró el archivo principal de $tool_name${COLORS['NC']}"
-        echo -e "${COLORS['YELLOW']}Directorio: $tool_dir${COLORS['NC']}"
         return 1
-    fi
+    }
     
     # Obtener la extensión del archivo
     local extension="${main_file##*.}"
     
     # Hacer el archivo ejecutable si es necesario
     if [[ "$extension" == "sh" || "$extension" == "py" || "$extension" == "rb" ]]; then
-        chmod +x "$main_file"
-    fi
+        chmod +x "$main_file" || {
+            echo -e "${COLORS['RED']}${UNICODE['ERROR']} No se pudo hacer ejecutable el archivo principal${COLORS['NC']}"
+            return 1
+        }
+    }
     
     # Ejecutar el archivo según su extensión
     case "$extension" in
         "sh")
-            cd "$(dirname "$main_file")" && ./"$(basename "$main_file")"
+            cd "$(dirname "$main_file")" && ./"$(basename "$main_file")" "${args[@]}"
             ;;
         "py")
-            cd "$(dirname "$main_file")" && python3 "$(basename "$main_file")"
+            cd "$(dirname "$main_file")" && python3 "$(basename "$main_file")" "${args[@]}"
             ;;
         "rb")
-            cd "$(dirname "$main_file")" && ruby "$(basename "$main_file")"
+            cd "$(dirname "$main_file")" && ruby "$(basename "$main_file")" "${args[@]}"
             ;;
         "jar")
-            cd "$(dirname "$main_file")" && java -jar "$(basename "$main_file")"
+            cd "$(dirname "$main_file")" && java -jar "$(basename "$main_file")" "${args[@]}"
             ;;
         "exe")
-            cd "$(dirname "$main_file")" && wine "$(basename "$main_file")"
+            cd "$(dirname "$main_file")" && wine "$(basename "$main_file")" "${args[@]}"
             ;;
         *)
-            cd "$(dirname "$main_file")" && ./"$(basename "$main_file")"
+            cd "$(dirname "$main_file")" && ./"$(basename "$main_file")" "${args[@]}"
             ;;
     esac
+    
+    # Verificar si la ejecución fue exitosa
+    if [ $? -ne 0 ]; then
+        echo -e "${COLORS['RED']}${UNICODE['ERROR']} Error al ejecutar $tool_name${COLORS['NC']}"
+        return 1
+    fi
+    
+    return 0
+}
+
+# Función para verificar si una herramienta está instalada
+is_tool_installed() {
+    local tool_name=$1
+    local tool_dir="$TOOLS_DIR/$tool_name"
+    
+    if [ -d "$tool_dir" ]; then
+        # Verificar si hay un archivo ejecutable principal
+        local main_file=$(find_main_file "$tool_dir")
+        if [ -n "$main_file" ] && [ -x "$main_file" ]; then
+            return 0
+        fi
+    fi
+    return 1
 }
 
 # Función para instalar herramientas
 install_tool() {
     local tool_name=$1
     local tool_dir="$TOOLS_DIR/$tool_name"
+    
+    # Verificar si ya está instalada
+    if is_tool_installed "$tool_name"; then
+        echo -e "${COLORS['GREEN']}${UNICODE['SUCCESS']} $tool_name ya está instalada${COLORS['NC']}"
+        return 0
+    fi
     
     echo -e "${COLORS['CYAN']}Instalando $tool_name...${COLORS['NC']}"
     
@@ -1426,25 +1517,43 @@ install_tool() {
     fi
     
     # Crear directorio para la herramienta
-    mkdir -p "$tool_dir"
+    mkdir -p "$tool_dir" || {
+        echo -e "${COLORS['RED']}${UNICODE['ERROR']} No se pudo crear el directorio para $tool_name${COLORS['NC']}"
+        return 1
+    }
     
     # Clonar repositorio
     echo -e "${COLORS['YELLOW']}Clonando repositorio: $repo_url${COLORS['NC']}"
-    git clone "$repo_url" "$tool_dir"
+    if ! git clone "$repo_url" "$tool_dir"; then
+        echo -e "${COLORS['RED']}${UNICODE['ERROR']} Error al clonar el repositorio de $tool_name${COLORS['NC']}"
+        return 1
+    fi
     
-    # Instalar dependencias si existe requirements.txt
+    # Instalar dependencias específicas de la herramienta
     if [ -f "$tool_dir/requirements.txt" ]; then
         echo -e "${COLORS['YELLOW']}Instalando dependencias de Python...${COLORS['NC']}"
-        pip install -r "$tool_dir/requirements.txt"
+        if ! pip install -r "$tool_dir/requirements.txt"; then
+            echo -e "${COLORS['RED']}${UNICODE['ERROR']} Error al instalar dependencias de Python para $tool_name${COLORS['NC']}"
+            return 1
+        fi
     fi
     
-    # Instalar dependencias si existe setup.py
     if [ -f "$tool_dir/setup.py" ]; then
         echo -e "${COLORS['YELLOW']}Instalando con setup.py...${COLORS['NC']}"
-        cd "$tool_dir" && python setup.py install
+        if ! (cd "$tool_dir" && python setup.py install); then
+            echo -e "${COLORS['RED']}${UNICODE['ERROR']} Error al instalar con setup.py para $tool_name${COLORS['NC']}"
+            return 1
+        fi
     fi
     
-    echo -e "${COLORS['GREEN']}$tool_name instalado correctamente${COLORS['NC']}"
+    # Verificar la instalación
+    if ! is_tool_installed "$tool_name"; then
+        echo -e "${COLORS['RED']}${UNICODE['ERROR']} La instalación de $tool_name no fue exitosa${COLORS['NC']}"
+        return 1
+    fi
+    
+    echo -e "${COLORS['GREEN']}${UNICODE['SUCCESS']} $tool_name instalada correctamente${COLORS['NC']}"
+    return 0
 }
 
 # Función principal
