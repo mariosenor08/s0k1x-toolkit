@@ -1,101 +1,78 @@
-# SOKIX Toolkit - Professional Edition
+# SOKIX Toolkit - Professional Ethical Hacking Environment
 
-![SOKIX Toolkit](https://img.shields.io/badge/Version-5.0.0-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
-![Platform](https://img.shields.io/badge/Platform-Kali%20Linux-orange)
-![Status](https://img.shields.io/badge/Status-Active-brightgreen)
+![SOKIX Toolkit Banner](assets/banner.png)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/Version-8.0.0-blue.svg)](https://github.com/sokix/toolkit/releases)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)](https://github.com/sokix/toolkit)
+[![Documentation](https://img.shields.io/badge/Documentation-Online-green.svg)](https://docs.sokix.com)
 
 ## Overview
 
-SOKIX Toolkit is a comprehensive, professional-grade security toolkit designed for ethical hackers, penetration testers, and security professionals. Built specifically for Kali Linux, it provides a robust framework for conducting security assessments, penetration testing, and vulnerability analysis.
+SOKIX Toolkit is a comprehensive, professional-grade ethical hacking environment designed for security professionals, penetration testers, and cybersecurity researchers. This toolkit provides a robust framework for conducting authorized security assessments, vulnerability research, and penetration testing.
 
 ## Features
 
 ### Core Capabilities
-- 🛡️ Advanced security assessment tools
+- 🛡️ Advanced penetration testing tools
 - 🔍 Comprehensive vulnerability scanning
-- 📊 Detailed reporting and analytics
-- 🔐 Secure configuration management
-- 🚀 Performance optimization
-- 📈 Real-time monitoring
+- 🎯 Network analysis and monitoring
+- 🔐 Password auditing and recovery
+- 🌐 Web application security testing
+- 📱 Mobile security assessment
+- 🎮 Game security research
+- 📊 Forensic analysis tools
 
-### Tool Categories
-1. **Exploitation Tools**
-   - Metasploit Framework
-   - Exploit Database
-   - SQL Injection Tools
-   - Password Cracking Tools
+### Professional Tools
+- Metasploit Framework integration
+- Nmap advanced scanning
+- Wireshark network analysis
+- Burp Suite web testing
+- SQLMap database testing
+- Aircrack-ng wireless security
+- Hashcat password cracking
+- John the Ripper password auditing
 
-2. **Network Security**
-   - Network Scanners
-   - Packet Analyzers
-   - MITM Tools
-   - Wireless Security Tools
-
-3. **Web Security**
-   - Web Application Scanners
-   - CMS Security Tools
-   - API Security Tools
-   - Web Proxy Tools
-
-4. **Forensic Analysis**
-   - Memory Analysis
-   - Disk Forensics
-   - Network Forensics
-   - Malware Analysis
-
-5. **OSINT Tools**
-   - Information Gathering
-   - Social Media Analysis
-   - Email Verification
-   - Account Verification
-
-6. **Mobile Security**
-   - Android Security
-   - iOS Security
-   - Mobile App Analysis
-   - Mobile Network Security
-
-7. **Cloud Security**
-   - AWS Security
-   - Azure Security
-   - GCP Security
-   - Cloud Infrastructure Security
+### Security Modules
+- OSINT and reconnaissance
+- Web application security
+- Network security
+- Mobile security
+- Game security
+- Forensic analysis
+- Social engineering
+- Exploitation frameworks
 
 ## Installation
 
-### Prerequisites
-- Kali Linux 2023.x or later
-- Minimum 8GB RAM
-- Minimum 100GB disk space
-- 8 CPU cores recommended
-- Internet connection
+### Windows
+```powershell
+# Using PowerShell
+Invoke-WebRequest -Uri "https://sokix.com/install.ps1" -OutFile "install.ps1"
+.\install.ps1
 
-### Quick Start
-```bash
-# Clone the repository
-git clone https://github.com/sokix/toolkit.git
-
-# Navigate to the toolkit directory
-cd toolkit
-
-# Make the script executable
-chmod +x sokix_toolkit.sh
-
-# Run the toolkit
-./sokix_toolkit.sh
+# Using Command Prompt
+curl -o install.bat https://sokix.com/install.bat
+install.bat
 ```
 
-### Advanced Installation
+### Linux
 ```bash
-# Install with custom configuration
-./sokix_toolkit.sh --install --config custom_config.yaml
+# Debian/Ubuntu
+curl -s https://sokix.com/install.sh | sudo bash
 
-# Install specific modules
-./sokix_toolkit.sh --install --modules web,network,forensics
+# RHEL/CentOS
+curl -s https://sokix.com/install.sh | sudo bash
+```
 
-# Install with performance optimization
-./sokix_toolkit.sh --install --optimize
+### macOS
+```bash
+# Using Homebrew
+brew tap sokix/toolkit
+brew install sokix-toolkit
+
+# Manual installation
+curl -s https://sokix.com/install.sh | bash
 ```
 
 ## Usage
@@ -103,99 +80,81 @@ chmod +x sokix_toolkit.sh
 ### Basic Commands
 ```bash
 # Start the toolkit
-./sokix_toolkit.sh
+sokix start
 
 # Update the toolkit
-./sokix_toolkit.sh --update
+sokix update
 
-# Backup configuration
-./sokix_toolkit.sh --backup
+# List available tools
+sokix list
 
-# Restore from backup
-./sokix_toolkit.sh --restore backup_file.tar.gz
+# Run a specific tool
+sokix run <tool_name>
 ```
 
 ### Advanced Usage
 ```bash
-# Run specific module
-./sokix_toolkit.sh --module web --tool nikto
+# Configure the toolkit
+sokix config
 
-# Generate report
-./sokix_toolkit.sh --report --format pdf
+# Create a new project
+sokix new project <project_name>
 
-# Configure settings
-./sokix_toolkit.sh --config --set proxy.enabled=true
+# Generate a report
+sokix report generate
+
+# Export results
+sokix export <format>
 ```
 
-## Configuration
+## Documentation
 
-### Main Configuration File
-```yaml
-# /etc/sokix/config.yaml
-version: 5.0.0
-update_check: true
-auto_backup: true
-max_log_size: 100M
-debug_mode: false
-proxy_enabled: false
-proxy_address: ""
+For detailed documentation, please visit our [official documentation site](https://docs.sokix.com).
 
-modules:
-  enabled: true
-  auto_update: true
-  cache_enabled: true
+### Key Documentation Sections
+- [Getting Started](https://docs.sokix.com/getting-started)
+- [Tool Usage](https://docs.sokix.com/tools)
+- [Security Guidelines](https://docs.sokix.com/security)
+- [API Reference](https://docs.sokix.com/api)
+- [Troubleshooting](https://docs.sokix.com/troubleshooting)
 
-security:
-  encryption_enabled: true
-  backup_encryption: true
-  audit_logging: true
+## Security
 
-performance:
-  max_threads: 4
-  cache_size: 1G
-  compression_level: 6
-```
+### Responsible Disclosure
+We take security seriously. If you discover any security vulnerabilities, please report them to:
+- Email: security@sokix.com
+- PGP Key: [Download](https://sokix.com/security/pgp.asc)
 
-## Security Considerations
-
-- 🔒 All tools are configured with security best practices
-- 🛡️ Automatic security updates
-- 🔐 Encrypted configuration storage
-- 📝 Comprehensive audit logging
-- 🚫 Strict access controls
+### Security Features
+- Encrypted configuration storage
+- Secure credential management
+- Audit logging
+- Session management
+- Access control
+- Data encryption
 
 ## Contributing
 
-We welcome contributions from the security community. Please follow these guidelines:
+We welcome contributions from the security community. Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting pull requests.
 
+### How to Contribute
 1. Fork the repository
 2. Create a feature branch
 3. Commit your changes
 4. Push to the branch
 5. Create a Pull Request
 
-### Code Standards
-- Follow PEP 8 for Python code
-- Use meaningful variable names
-- Include comprehensive comments
-- Write unit tests for new features
-
 ## Support
 
-### Documentation
-- [User Guide](docs/user_guide.md)
-- [API Documentation](docs/api.md)
-- [Troubleshooting Guide](docs/troubleshooting.md)
-
-### Community
-- [Discord Server](https://discord.gg/sokix)
-- [GitHub Discussions](https://github.com/sokix/toolkit/discussions)
-- [Security Blog](https://blog.sokix.org)
-
 ### Professional Support
-- Email: support@sokix.org
-- Website: https://sokix.org
+- Email: support@sokix.com
 - Phone: +1 (555) 123-4567
+- Hours: 24/7
+
+### Community Support
+- [Discord](https://discord.gg/sokix)
+- [Forum](https://forum.sokix.com)
+- [Stack Overflow](https://stackoverflow.com/questions/tagged/sokix)
 
 ## License
 
@@ -203,16 +162,22 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Kali Linux Team
-- Open Source Security Community
-- All Contributors and Maintainers
+- Security researchers and contributors
+- Open source community
+- Security tool developers
+- Testing community
 
 ## Disclaimer
 
-This toolkit is intended for legal and ethical security testing only. Users are responsible for ensuring they have proper authorization before conducting any security testing. The developers are not responsible for any misuse or illegal activities conducted with this toolkit.
+This toolkit is intended for authorized security testing and research purposes only. Users must comply with all applicable laws and regulations. The SOKIX Security Team is not responsible for any misuse or damage caused by this toolkit.
+
+## Contact
+
+- Website: [https://sokix.com](https://sokix.com)
+- Email: contact@sokix.com
+- Twitter: [@SOKIXSecurity](https://twitter.com/SOKIXSecurity)
+- LinkedIn: [SOKIX Security](https://linkedin.com/company/sokix-security)
 
 ---
 
-<div align="center">
-  <sub>Built with ❤️ by the SOKIX Security Team</sub>
-</div> 
+© 2024 SOKIX Security Team. All rights reserved. 

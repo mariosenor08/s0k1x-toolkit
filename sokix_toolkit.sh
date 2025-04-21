@@ -1,899 +1,1287 @@
 #!/bin/bash
 
-# SOKIX Toolkit - Professional Edition
-# Version: 5.0.0
+# SOKIX Toolkit - Professional Ethical Hacking Environment
+# Version: 8.0.0
 # License: MIT
 # Author: SOKIX Security Team
 
-# Enhanced strict mode with error handling
+# Enhanced strict mode with advanced error handling
 set -euo pipefail
 IFS=$'\n\t'
-trap 'handle_error $? $LINENO' ERR
 
-# Global Configuration
-readonly VERSION="5.0.0"
-readonly TOOLKIT_NAME="SOKIX Professional"
+# Advanced Global Configuration
+readonly VERSION="8.0.0"
+readonly TOOLKIT_NAME="SOKIX Professional Hacking Toolkit"
 readonly CONFIG_FILE="/etc/sokix/config.yaml"
-readonly LOG_FILE="/var/log/sokix/toolkit.log"
+readonly LOG_FILE="/var/log/sokix/hacking.log"
+readonly TOOLS_DIR="/usr/share/sokix/tools"
 readonly MODULES_DIR="/usr/share/sokix/modules"
-readonly PLUGINS_DIR="/usr/share/sokix/plugins"
 readonly SCRIPTS_DIR="/usr/share/sokix/scripts"
 readonly CACHE_DIR="/var/cache/sokix"
 readonly TEMP_DIR="/tmp/sokix"
 readonly BACKUP_DIR="/var/backups/sokix"
 readonly REPORTS_DIR="/var/reports/sokix"
-readonly LOCK_FILE="/var/lock/sokix.lock"
-readonly DIAGNOSTIC_FILE="/var/log/sokix/diagnostic.log"
-readonly PERFORMANCE_FILE="/var/log/sokix/performance.log"
+readonly EXPLOITS_DIR="/usr/share/sokix/exploits"
+readonly PAYLOADS_DIR="/usr/share/sokix/payloads"
+readonly WORDLISTS_DIR="/usr/share/sokix/wordlists"
+readonly DATABASES_DIR="/usr/share/sokix/databases"
+readonly PROXIES_DIR="/usr/share/sokix/proxies"
+readonly TOR_DIR="/usr/share/sokix/tor"
+readonly VPN_DIR="/usr/share/sokix/vpn"
+readonly SHELLS_DIR="/usr/share/sokix/shells"
+readonly BACKDOORS_DIR="/usr/share/sokix/backdoors"
+readonly MALWARE_DIR="/usr/share/sokix/malware"
+readonly REVERSE_DIR="/usr/share/sokix/reverse"
+readonly BRUTE_DIR="/usr/share/sokix/brute"
+readonly FUZZING_DIR="/usr/share/sokix/fuzzing"
+readonly SCANNING_DIR="/usr/share/sokix/scanning"
+readonly ENUMERATION_DIR="/usr/share/sokix/enumeration"
+readonly PRIVILEGE_DIR="/usr/share/sokix/privilege"
+readonly PERSISTENCE_DIR="/usr/share/sokix/persistence"
+readonly LATERAL_DIR="/usr/share/sokix/lateral"
+readonly EXFILTRATION_DIR="/usr/share/sokix/exfiltration"
+readonly COVERING_DIR="/usr/share/sokix/covering"
 
-# System Requirements
-readonly MIN_RAM_MB=8192
-readonly MIN_DISK_GB=100
-readonly MIN_CPU_CORES=8
-readonly REQUIRED_COMMANDS=(
-    "git" "curl" "wget" "python3" "pip3" "awk" "sed" "grep" 
-    "tar" "unzip" "gcc" "make" "docker" "virtualenv" "npm"
-    "jq" "yq" "ansible" "terraform" "kubectl" "helm"
-    "go" "rustc" "cargo" "node" "npm" "yarn"
-    "perf" "strace" "ltrace" "gdb" "valgrind" "htop"
-    "iostat" "vmstat" "netstat" "ss" "tcpdump" "wireshark"
-    "nmap" "masscan" "zmap" "metasploit" "sqlmap" "burpsuite"
-    "gobuster" "dirb" "nikto" "wpscan" "joomscan" "droopescan"
-    "hydra" "john" "hashcat" "aircrack-ng" "reaver" "wifite"
-    "theharvester" "maltego" "spiderfoot" "recon-ng" "sherlock"
-    "autopsy" "volatility" "binwalk" "foremost" "scalpel"
-    "radare2" "ghidra" "ida" "ollydbg" "x64dbg" "immunity"
-    "wireshark" "tcpdump" "tshark" "ettercap" "bettercap"
-    "mitmproxy" "burpsuite" "zap" "w3af" "nikto" "sqlmap"
-    "metasploit" "empire" "cobaltstrike" "sliver" "merlin"
-    "crackmapexec" "impacket" "bloodhound" "kerbrute" "responder"
-    "evil-winrm" "chisel" "socat" "netcat" "ncat" "socat"
-    "proxychains" "sshuttle" "iodine" "dnscat2" "tunna"
-    "chisel" "socat" "netcat" "ncat" "socat" "proxychains"
-    "sshuttle" "iodine" "dnscat2" "tunna" "chisel" "socat"
+# Advanced Color System with RGB support
+declare -A COLORS
+COLORS=(
+    ["RED"]="\033[1;31m"
+    ["GREEN"]="\033[1;32m"
+    ["YELLOW"]="\033[1;33m"
+    ["BLUE"]="\033[1;34m"
+    ["PURPLE"]="\033[1;35m"
+    ["CYAN"]="\033[1;36m"
+    ["WHITE"]="\033[1;37m"
+    ["ORANGE"]="\033[1;38;5;208m"
+    ["PINK"]="\033[1;38;5;206m"
+    ["LIME"]="\033[1;38;5;118m"
+    ["MATRIX"]="\033[1;38;5;40m"
+    ["HACKER"]="\033[1;38;5;196m"
+    ["CYBERPUNK"]="\033[1;38;5;99m"
+    ["STEALTH"]="\033[1;38;5;240m"
+    ["NEON"]="\033[1;38;5;45m"
+    ["NC"]="\033[0m"
 )
 
-# Enhanced Color System
-declare -A COLORS=(
-    ["RED"]='\033[1;31m'
-    ["GREEN"]='\033[1;32m'
-    ["YELLOW"]='\033[1;33m'
-    ["BLUE"]='\033[1;34m'
-    ["PURPLE"]='\033[1;35m'
-    ["CYAN"]='\033[1;36m'
-    ["WHITE"]='\033[1;37m'
-    ["ORANGE"]='\033[1;38;5;208m'
-    ["PINK"]='\033[1;38;5;206m'
-    ["LIME"]='\033[1;38;5;118m'
-    ["NC"]='\033[0m'
+# Advanced Unicode Characters with more options
+declare -A UNICODE
+UNICODE=(
+    ["BORDER_TOP"]="+-----------------------------------------+"
+    ["BORDER_BOTTOM"]="+-----------------------------------------+"
+    ["BORDER_SIDE"]="|"
+    ["BORDER_MIDDLE"]="|------------------------------------------|"
+    ["SPARKLE"]="*"
+    ["CHECK"]="√"
+    ["WARNING"]="!"
+    ["ERROR"]="x"
+    ["INFO"]="i"
+    ["STAR"]="*"
+    ["DIAMOND"]="<>"
+    ["HEART"]="<3"
+    ["ARROW"]=">"
+    ["LOADING"]="/-\|"
+    ["PROGRESS_BAR_FILL"]="#"
+    ["PROGRESS_BAR_EMPTY"]="."
+    ["BULLET"]="*"
+    ["CROSS"]="X"
+    ["LOCK"]="[X]"
+    ["UNLOCK"]="[ ]"
+    ["KEY"]="key"
+    ["SHIELD"]="[S]"
+    ["SWORD"]="[W]"
+    ["WRENCH"]="[T]"
+    ["GEAR"]="[G]"
+    ["LIGHTNING"]="[L]"
+    ["FIRE"]="[F]"
+    ["TARGET"]="[O]"
+    ["SKULL"]="[D]"
+    ["GHOST"]="[H]"
+    ["ROBOT"]="[R]"
+    ["TERMINAL"]="[>]"
+    ["SATELLITE"]="[^]"
+    ["MAGNIFIER"]="[M]"
+    ["TOOLS"]="[T]"
+    ["DOWNLOAD"]="[D]"
+    ["SUCCESS"]="[OK]"
+    ["FAILED"]="[!!]"
+    ["LOADING_WHEEL"]="[*]"
+    ["PACKAGE"]="[P]"
+    ["CLOCK"]="[C]"
+    ["CHART"]="[#]"
+    ["FOLDER"]="[/]"
+    ["GAME"]="[G]"
+    ["MOBILE"]="[M]"
+    ["NETWORK"]="[N]"
+    ["SECURITY"]="[S]"
+    ["HACKING"]="[H]"
+    ["SCANNING"]="[S]"
+    ["EXPLOITING"]="[E]"
+    ["CRACKING"]="[C]"
+    ["SOCIAL"]="[S]"
+    ["FORENSICS"]="[F]"
+    ["REPORT"]="[R]"
+    ["SETTINGS"]="[S]"
+    ["UPDATE"]="[U]"
+    ["EXIT"]="[X]"
 )
 
-# Enhanced Unicode Characters
-declare -A UNICODE=(
-    ["BORDER_TOP"]="╭─────────────────────────────────────────────────────────────────╮"
-    ["BORDER_BOTTOM"]="╰─────────────────────────────────────────────────────────────────╯"
-    ["BORDER_SIDE"]="│"
-    ["BORDER_MIDDLE"]="├─────────────────────────────────────────────────────────────────┤"
-    ["SPARKLE"]="✨"
-    ["CHECK"]="✓"
-    ["WARNING"]="⚠"
-    ["ERROR"]="✗"
-    ["INFO"]="ℹ"
-    ["STAR"]="★"
-    ["DIAMOND"]="♦"
-    ["HEART"]="♥"
-    ["ARROW"]="➜"
-    ["LOADING"]=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
-    ["PROGRESS_BAR_FILL"]="█"
-    ["PROGRESS_BAR_EMPTY"]="░"
-    ["BULLET"]="•"
-    ["CROSS"]="✖"
-    ["LOCK"]="🔒"
-    ["UNLOCK"]="🔓"
-    ["KEY"]="🔑"
-    ["SHIELD"]="🛡️"
-    ["SWORD"]="⚔️"
-    ["WRENCH"]="🔧"
-    ["GEAR"]="⚙️"
-    ["LIGHTNING"]="⚡"
-    ["FIRE"]="🔥"
-    ["TARGET"]="🎯"
-    ["SKULL"]="💀"
-    ["GHOST"]="👻"
-    ["ROBOT"]="🤖"
-    ["TERMINAL"]="💻"
-    ["SATELLITE"]="📡"
-    ["MAGNIFIER"]="🔍"
-    ["TOOLS"]="🛠️"
-    ["DOWNLOAD"]="📥"
-    ["SUCCESS"]="✅"
-    ["FAILED"]="❌"
-    ["LOADING_WHEEL"]="🔄"
-    ["PACKAGE"]="📦"
-    ["CLOCK"]="⏰"
-    ["CHART"]="📊"
-    ["FOLDER"]="📁"
+# Sistema de diagnóstico mejorado
+declare -A DIAGNOSTIC_CHECKS=(
+    [system]="Verificando sistema operativo y recursos"
+    [network]="Comprobando conectividad y servicios de red"
+    [security]="Analizando configuraciones de seguridad"
+    [performance]="Evaluando rendimiento del sistema"
+    [dependencies]="Revisando dependencias y paquetes"
+    [tools]="Verificando estado de las herramientas"
+    [permissions]="Comprobando permisos y accesos"
+    [storage]="Analizando espacio en disco"
+    [memory]="Verificando uso de memoria"
+    [cpu]="Comprobando carga del procesador"
 )
 
-# Enhanced Logging System
-log() {
-    local level=$1
-    local message=$2
-    local timestamp=$(date "+%Y-%m-%d %H:%M:%S")
-    local log_level_color
-    local log_level_icon
-    
-    case $level in
-        "INFO")
-            log_level_color=${COLORS["BLUE"]}
-            log_level_icon=${UNICODE["INFO"]}
-            ;;
-        "WARNING")
-            log_level_color=${COLORS["YELLOW"]}
-            log_level_icon=${UNICODE["WARNING"]}
-            ;;
-        "ERROR")
-            log_level_color=${COLORS["RED"]}
-            log_level_icon=${UNICODE["ERROR"]}
-            ;;
-        "SUCCESS")
-            log_level_color=${COLORS["GREEN"]}
-            log_level_icon=${UNICODE["CHECK"]}
-            ;;
-        *)
-            log_level_color=${COLORS["WHITE"]}
-            log_level_icon=${UNICODE["INFO"]}
-            ;;
-    esac
-    
-    echo -e "${log_level_color}[${log_level_icon}] ${message}${COLORS["NC"]}"
-    echo "[$timestamp] [$level] $message" >> "$LOG_FILE"
+# Advanced ASCII Art Banner
+show_banner() {
+    clear
+    echo -e "${COLORS['PURPLE']}"
+    echo "  ███████╗ ██████╗ ██╗  ██╗██╗██╗  ██╗"
+    echo "  ██╔════╝██╔═══██╗██║ ██╔╝██║╚██╗██╔╝"
+    echo "  ███████╗██║   ██║█████╔╝ ██║ ╚███╔╝ "
+    echo "  ╚════██║██║   ██║██╔═██╗ ██║ ██╔██╗ "
+    echo "  ███████║╚██████╔╝██║  ██╗██║██╔╝ ██╗"
+    echo "  ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝╚═╝  ╚═╝"
+    echo -e "${COLORS['NC']}"
+    echo -e "${COLORS['CYAN']}Professional Ethical Hacking Environment v$VERSION${COLORS['NC']}"
+    echo -e "${COLORS['YELLOW']}Copyright (c) 2024 SOKIX Security Team${COLORS['NC']}"
+    echo
 }
 
-# Enhanced Error Handling
+# Enhanced Main Menu with Categories
+show_main_menu() {
+    clear
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_TOP']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['CYAN']}${UNICODE['TERMINAL']} SOKIX Toolkit v$VERSION ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    
+    # Categoría: OSINT
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['ORANGE']}${UNICODE['MAGNIFIER']} Herramientas OSINT ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}1.${COLORS['NC']} AllHackingTools ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}2.${COLORS['NC']} NetSoc_OSINT ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}3.${COLORS['NC']} OSINT-Framework ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}4.${COLORS['NC']} ReconDog ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}5.${COLORS['NC']} OSINT-Tool ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}6.${COLORS['NC']} OSINT-Toolkit ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    
+    # Categoría: Explotación Web
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['ORANGE']}${UNICODE['MAGNIFIER']} Explotación Web ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}7.${COLORS['NC']} XSS-Tools ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}8.${COLORS['NC']} D-TECT ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}9.${COLORS['NC']} XSStrike ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}10.${COLORS['NC']} SQLMap ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}11.${COLORS['NC']} WPScan ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}12.${COLORS['NC']} Burp Suite ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}13.${COLORS['NC']} OWASP ZAP ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}14.${COLORS['NC']} BeEF ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    
+    # Categoría: Explotación y Post-Explotación
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['ORANGE']}${UNICODE['SWORD']} Explotación y Post-Explotación ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}15.${COLORS['NC']} Metasploit Framework ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}16.${COLORS['NC']} Empire ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}17.${COLORS['NC']} Cobalt Strike ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}18.${COLORS['NC']} Mimikatz ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}19.${COLORS['NC']} CrackMapExec ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}20.${COLORS['NC']} Impacket ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    
+    # Categoría: Escaneo y Análisis de Red
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['ORANGE']}${UNICODE['SATELLITE']} Escaneo y Análisis de Red ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}21.${COLORS['NC']} Nmap ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}22.${COLORS['NC']} Wireshark ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}23.${COLORS['NC']} Bettercap ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}24.${COLORS['NC']} Nessus ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    
+    # Categoría: Análisis Web
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['ORANGE']}${UNICODE['MAGNIFIER']} Análisis Web ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}25.${COLORS['NC']} Burp Suite ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}26.${COLORS['NC']} ZAP (Zed Attack Proxy) ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}27.${COLORS['NC']} sqlmap ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}28.${COLORS['NC']} XSStrike ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}29.${COLORS['NC']} Vega ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}30.${COLORS['NC']} Nikto ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}31.${COLORS['NC']} Skipfish ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}32.${COLORS['NC']} Wfuzz ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    
+    # Categoría: OSINT y Reconocimiento
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['ORANGE']}${UNICODE['MAGNIFIER']} OSINT y Reconocimiento ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}33.${COLORS['NC']} Maltego ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}34.${COLORS['NC']} Recon-ng ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}35.${COLORS['NC']} SpiderFoot ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}36.${COLORS['NC']} Amass ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}37.${COLORS['NC']} Sublist3r ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}38.${COLORS['NC']} Fierce ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}39.${COLORS['NC']} Subfinder ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}40.${COLORS['NC']} Dirsearch ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}41.${COLORS['NC']} Nuclei ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}42.${COLORS['NC']} Gobuster ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    
+    # Categoría: Ingeniería Social
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['ORANGE']}${UNICODE['GHOST']} Ingeniería Social ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}43.${COLORS['NC']} Social-Engineer Toolkit (SET) ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}44.${COLORS['NC']} GoPhish ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}45.${COLORS['NC']} Zphisher ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    
+    # Categoría: Análisis de Redes Inalámbricas
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['ORANGE']}${UNICODE['SATELLITE']} Análisis de Redes Inalámbricas ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}46.${COLORS['NC']} Aircrack-ng ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    
+    # Categoría: Herramientas de Cracking
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['ORANGE']}${UNICODE['KEY']} Herramientas de Cracking ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}47.${COLORS['NC']} Hashcat ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}48.${COLORS['NC']} John the Ripper ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}49.${COLORS['NC']} Hydra ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}50.${COLORS['NC']} Cewl ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    
+    # Categoría: Utilidades
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['ORANGE']}${UNICODE['TOOLS']} Utilidades ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}51.${COLORS['NC']} ProxyChains ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}52.${COLORS['NC']} GoReverseShell ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}53.${COLORS['NC']} T50 ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}54.${COLORS['NC']} Nginx Helper ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}55.${COLORS['NC']} Crackstation ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    
+    # Categoría: Sistema
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['ORANGE']}${UNICODE['GEAR']} Sistema ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}56.${COLORS['NC']} Configuración ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}57.${COLORS['NC']} Actualizaciones ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}58.${COLORS['NC']} Salir ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    
+    # Categoría: Hacking de Juegos
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['ORANGE']}${UNICODE['GAME']} Hacking de Juegos ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}59.${COLORS['NC']} Game Hacking Framework ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}60.${COLORS['NC']} Cheat Engine ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}61.${COLORS['NC']} Squalr ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}62.${COLORS['NC']} MungPlex ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}63.${COLORS['NC']} GTA SA Cheats ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}64.${COLORS['NC']} Payback2 Cheats ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}65.${COLORS['NC']} SimCity Cheat ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}66.${COLORS['NC']} Warzone2100 ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}67.${COLORS['NC']} StellarRealms ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}68.${COLORS['NC']} Online Games Hacking ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}69.${COLORS['NC']} Memory Signature Scanner ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}70.${COLORS['NC']} D3D11 Hook ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    
+    # Categoría: Hacking de Aplicaciones Móviles
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['ORANGE']}${UNICODE['MOBILE']} Hacking de Aplicaciones Móviles ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}71.${COLORS['NC']} WhatsAppHacking ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}72.${COLORS['NC']} Android Studio ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}73.${COLORS['NC']} APKTool ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}74.${COLORS['NC']} Dex2Jar ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_BOTTOM']}${COLORS['NC']}"
+    echo -e "${COLORS['GREEN']}${UNICODE['SUCCESS']} Seleccione una herramienta o módulo para comenzar${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_BOTTOM']}${COLORS['NC']}"
+}
+
+# Advanced Error Handling Function
 handle_error() {
-    local error_code=$1
+    local exit_code=$1
     local line_number=$2
-    local error_message="Error en línea $line_number: ${BASH_COMMAND}"
+    local error_message="Error en la línea $line_number con código de salida $exit_code"
     
-    log "ERROR" "$error_message"
+    echo -e "${COLORS[RED]}${UNICODE[ERROR]} $error_message${COLORS[NC]}"
+    echo -e "${COLORS[YELLOW]}${UNICODE[WARNING]} Intentando recuperar el sistema...${COLORS[NC]}"
     
-    case $error_code in
-        1) log "ERROR" "Error de permisos" ;;
-        2) log "ERROR" "Error de red" ;;
-        3) log "ERROR" "Error de dependencias" ;;
-        4) log "ERROR" "Error de instalación" ;;
-        5) log "ERROR" "Error de configuración" ;;
-        *) log "ERROR" "Error desconocido (código: $error_code)" ;;
-    esac
-    
-    # Cleanup on error
-    cleanup_on_error
+    recover_system
+    log_error "$error_message"
+    show_error_options
 }
 
-# Enhanced System Validation
-validate_system() {
-    log "INFO" "Validando sistema..."
-    
-    # Check CPU
-    local cpu_cores=$(nproc)
-    if [ "$cpu_cores" -lt "$MIN_CPU_CORES" ]; then
-        log "ERROR" "CPU insuficiente. Se requieren al menos $MIN_CPU_CORES núcleos"
-        return 1
+# System Recovery Function
+recover_system() {
+    if [[ -d "$TOOLS_DIR" ]]; then
+        chmod -R 755 "$TOOLS_DIR"
+        chown -R "$(whoami)" "$TOOLS_DIR"
     fi
     
-    # Check RAM
-    local total_ram=$(free -m | awk '/^Mem:/{print $2}')
-    if [ "$total_ram" -lt "$MIN_RAM_MB" ]; then
-        log "ERROR" "RAM insuficiente. Se requieren al menos $MIN_RAM_MB MB"
-        return 1
-    fi
-    
-    # Check disk space
-    local free_space=$(df -BG / | awk 'NR==2 {print $4}' | sed 's/G//')
-    if [ "$free_space" -lt "$MIN_DISK_GB" ]; then
-        log "ERROR" "Espacio en disco insuficiente. Se requieren al menos $MIN_DISK_GB GB"
-        return 1
-    fi
-    
-    # Check required commands
-    for cmd in "${REQUIRED_COMMANDS[@]}"; do
-        if ! command -v "$cmd" &> /dev/null; then
-            log "ERROR" "Comando requerido no encontrado: $cmd"
-            return 1
-        fi
-    done
-    
-    log "SUCCESS" "Validación del sistema completada"
-    return 0
+    check_dependencies
+    verify_configurations
+    clean_temp_files
 }
 
-# Enhanced Directory Management
-create_directory_structure() {
-    log "INFO" "Creando estructura de directorios..."
-    
-    local directories=(
-        "$MODULES_DIR"
-        "$PLUGINS_DIR"
-        "$SCRIPTS_DIR"
-        "$CACHE_DIR"
-        "$TEMP_DIR"
-        "$BACKUP_DIR"
-        "$REPORTS_DIR"
-    )
-    
-    for dir in "${directories[@]}"; do
-        if [ ! -d "$dir" ]; then
-            mkdir -p "$dir"
-            chmod 750 "$dir"
-            log "INFO" "Directorio creado: $dir"
-        fi
-    done
-    
-    # Create module subdirectories
-    for module in "${!MODULES[@]}"; do
-        mkdir -p "$MODULES_DIR/$module"
-    done
-    
-    log "SUCCESS" "Estructura de directorios creada exitosamente"
-}
-
-# Enhanced Configuration Management
-load_configuration() {
-    if [ -f "$CONFIG_FILE" ]; then
-        log "INFO" "Cargando configuración desde $CONFIG_FILE"
-        source "$CONFIG_FILE"
-    else
-        log "WARNING" "Archivo de configuración no encontrado, creando uno nuevo"
+# Configuration Verification Function
+verify_configurations() {
+    if [[ ! -f "$CONFIG_FILE" ]]; then
         create_default_config
     fi
+    
+    for dir in "$TOOLS_DIR" "$MODULES_DIR" "$SCRIPTS_DIR" "$CACHE_DIR" "$TEMP_DIR" "$BACKUP_DIR" "$REPORTS_DIR"; do
+        if [[ ! -d "$dir" ]]; then
+            mkdir -p "$dir"
+        fi
+    done
 }
 
+# Error Logging Function
+log_error() {
+    local message=$1
+    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    echo "[$timestamp] ERROR: $message" >> "$LOG_FILE"
+}
+
+# Show Error Options Function
+show_error_options() {
+    echo -e "${COLORS[YELLOW]}Opciones disponibles:${COLORS[NC]}"
+    echo -e "1. ${COLORS[GREEN]}Reintentar operación${COLORS[NC]}"
+    echo -e "2. ${COLORS[GREEN]}Verificar dependencias${COLORS[NC]}"
+    echo -e "3. ${COLORS[GREEN]}Reparar configuración${COLORS[NC]}"
+    echo -e "4. ${COLORS[GREEN]}Salir${COLORS[NC]}"
+    
+    read -p "Seleccione una opción: " option
+    case $option in
+        1) return 0 ;;
+        2) check_dependencies ;;
+        3) verify_configurations ;;
+        4) exit 1 ;;
+        *) echo -e "${COLORS[RED]}Opción inválida${COLORS[NC]}" ;;
+    esac
+}
+
+# Clean Temporary Files Function
+clean_temp_files() {
+    if [[ -d "$TEMP_DIR" ]]; then
+        rm -rf "${TEMP_DIR:?}"/*
+    fi
+}
+
+# Create Default Configuration Function
 create_default_config() {
-    log "INFO" "Creando configuración predeterminada"
     cat > "$CONFIG_FILE" << EOF
 # SOKIX Toolkit Configuration
 version: $VERSION
-update_check: true
-auto_backup: true
-max_log_size: 100M
-debug_mode: false
+theme: default
+debug: false
+log_level: info
+auto_update: true
 proxy_enabled: false
 proxy_address: ""
-modules:
-  enabled: true
-  auto_update: true
-  cache_enabled: true
-security:
-  encryption_enabled: true
-  backup_encryption: true
-  audit_logging: true
-performance:
-  max_threads: 4
-  cache_size: 1G
-  compression_level: 6
+proxy_port: ""
 EOF
-    chmod 640 "$CONFIG_FILE"
-    chown root:root "$CONFIG_FILE"
 }
 
-# Enhanced Tool Management
-declare -A TOOLS=(
-    # Exploitation Tools
-    ["metasploit"]="Framework de explotación y pruebas de penetración"
-    ["exploitdb"]="Base de datos de exploits"
-    ["sqlmap"]="Herramienta de inyección SQL"
-    ["hydra"]="Herramienta de fuerza bruta"
-    ["john"]="Herramienta de cracking de contraseñas"
-    ["hashcat"]="Herramienta avanzada de cracking de hashes"
-    ["crackmapexec"]="Herramienta de post-explotación"
-    ["impacket"]="Colección de scripts de Python para trabajar con protocolos de red"
-    ["responder"]="Herramienta de envenenamiento LLMNR/NBT-NS/MDNS"
-    ["evil-winrm"]="Shell WinRM para pentesting"
-    
-    # Network Tools
-    ["nmap"]="Escáner de red"
-    ["masscan"]="Escáner de puertos masivo"
-    ["zmap"]="Escáner de red de Internet"
-    ["tcpdump"]="Analizador de paquetes"
-    ["wireshark"]="Analizador de protocolos de red"
-    ["ettercap"]="Suite para ataques MITM"
-    ["bettercap"]="Framework de pentesting"
-    ["mitmproxy"]="Proxy para análisis de tráfico"
-    
-    # Web Tools
-    ["burpsuite"]="Plataforma de seguridad para aplicaciones web"
-    ["zap"]="Proxy de seguridad de aplicaciones web"
-    ["w3af"]="Framework de auditoría de aplicaciones web"
-    ["nikto"]="Escáner de vulnerabilidades web"
-    ["gobuster"]="Herramienta de fuzzing de directorios"
-    ["dirb"]="Escáner de directorios web"
-    ["wpscan"]="Escáner de seguridad para WordPress"
-    ["joomscan"]="Escáner de seguridad para Joomla"
-    ["droopescan"]="Escáner de seguridad para Drupal"
-    
-    # Wireless Tools
-    ["aircrack-ng"]="Suite de herramientas de seguridad inalámbrica"
-    ["reaver"]="Herramienta de ataque WPS"
-    ["wifite"]="Herramienta automatizada de auditoría inalámbrica"
-    
-    # OSINT Tools
-    ["theharvester"]="Herramienta de recolección de información"
-    ["maltego"]="Herramienta de análisis de enlaces"
-    ["spiderfoot"]="Herramienta de inteligencia de código abierto"
-    ["recon-ng"]="Framework de reconocimiento"
-    ["sherlock"]="Herramienta de búsqueda de nombres de usuario"
-    
-    # Forensic Tools
-    ["autopsy"]="Plataforma forense digital"
-    ["volatility"]="Framework de análisis de memoria"
-    ["binwalk"]="Herramienta de análisis de firmware"
-    ["foremost"]="Herramienta de recuperación de archivos"
-    ["scalpel"]="Herramienta de recuperación de archivos"
-    
-    # Reverse Engineering
-    ["radare2"]="Framework de ingeniería inversa"
-    ["ghidra"]="Herramienta de ingeniería inversa"
-    ["ida"]="Desensamblador y depurador"
-    ["ollydbg"]="Depurador de 32 bits"
-    ["x64dbg"]="Depurador de 64 bits"
-    ["immunity"]="Depurador de Python"
-    
-    # Account Verification Tools
-    ["amazon-verify"]="Verificación de cuentas de Amazon"
-    ["apple-verify"]="Verificación de cuentas de Apple"
-    ["gmail-verify"]="Verificación de cuentas de Gmail"
-    ["linkedin-verify"]="Verificación de cuentas de LinkedIn"
-    ["myspace-verify"]="Verificación de cuentas de Myspace"
-    ["twitter-verify"]="Verificación de cuentas de Twitter"
-    
-    # Social Media Tools
-    ["social-analyzer"]="Análisis de perfiles de redes sociales"
-    ["sherlock"]="Búsqueda de nombres de usuario en redes sociales"
-    ["social_mapper"]="Mapeo de perfiles en redes sociales"
-    ["twint"]="Herramienta avanzada de Twitter"
-    ["instaloader"]="Descarga de contenido de Instagram"
-    
-    # Email Tools
-    ["emailharvester"]="Recolección de direcciones de correo"
-    ["holehe"]="Verificación de cuentas de correo"
-    ["h8mail"]="Búsqueda de contraseñas filtradas"
-    ["infoga"]="Recolección de información de correo"
-    ["theharvester"]="Recolección de información de correo"
-    
-    # DDoS Tools
-    ["slowloris"]="Herramienta de ataque DoS"
-    ["goldeneye"]="Herramienta de prueba de DoS"
-    ["hulk"]="Herramienta de prueba de DoS"
-    ["xerxes"]="Herramienta de prueba de DoS"
-    ["torhammer"]="Herramienta de prueba de DoS"
-    
-    # Phishing Tools
-    ["gophish"]="Framework de phishing"
-    ["socialfish"]="Herramienta de phishing"
-    ["zphisher"]="Herramienta de phishing"
-    ["blackeye"]="Herramienta de phishing"
-    ["shellphish"]="Herramienta de phishing"
-    
-    # Virus Tools
-    ["maltego"]="Análisis de malware"
-    ["cuckoo"]="Sandbox de análisis de malware"
-    ["yara"]="Herramienta de identificación de malware"
-    ["clamav"]="Antivirus de código abierto"
-    ["virustotal"]="Análisis de archivos sospechosos"
-    
-    # IP Tools
-    ["ipinfo"]="Información de IP"
-    ["ip2location"]="Geolocalización de IP"
-    ["ipapi"]="API de información de IP"
-    ["ipdata"]="Datos de IP"
-    ["ipstack"]="Stack de información de IP"
-    
-    # New Categories
-    ["mobile"]="Herramientas de seguridad móvil"
-    ["cloud"]="Herramientas de seguridad en la nube"
-    ["crypto"]="Herramientas criptográficas"
-    ["defense"]="Herramientas de defensa de red"
-    ["incident"]="Herramientas de respuesta a incidentes"
-    ["threat"]="Herramientas de inteligencia de amenazas"
-    ["compliance"]="Herramientas de cumplimiento"
-    ["redteam"]="Herramientas de equipo rojo"
-    ["blueteam"]="Herramientas de equipo azul"
-    ["purpleteam"]="Herramientas de equipo púrpura"
+# Set up error trap
+trap 'handle_error $? $LINENO' ERR
+
+# Configuración avanzada del entorno
+declare -a MODULES=(
+    "core"
+    "network"
+    "web"
+    "mobile"
+    "osint"
+    "exploitation"
+    "post-exploitation"
+    "forensics"
+    "cracking"
+    "social-engineering"
+    "game-hacking"
+    "custom"
 )
 
-# Enhanced Module System
-declare -A MODULES=(
-    ["exploitation"]="Exploitation Tools"
-    ["network"]="Network Tools"
-    ["web"]="Web Tools"
-    ["mobile"]="Mobile Security"
-    ["cloud"]="Cloud Security"
-    ["crypto"]="Cryptographic Tools"
-    ["wireless"]="Wireless Security"
-    ["osint"]="OSINT Tools"
-    ["forensics"]="Forensic Tools"
-    ["malware"]="Malware Analysis"
-    ["reverse"]="Reverse Engineering"
-    ["iot"]="IoT Security"
-    ["social"]="Social Engineering"
-    ["password"]="Password Tools"
-    ["defense"]="Network Defense"
-    ["incident"]="Incident Response"
-    ["threat"]="Threat Intelligence"
-    ["compliance"]="Compliance Tools"
-    ["redteam"]="Red Team Tools"
-    ["blueteam"]="Blue Team Tools"
-    ["purpleteam"]="Purple Team Tools"
-    ["account_verification"]="Account Verification"
-    ["social_media"]="Social Media Tools"
-    ["email"]="Email Tools"
-    ["ddos"]="DDoS Tools"
-    ["phishing"]="Phishing Tools"
-    ["virus"]="Virus Tools"
-    ["ip"]="IP Tools"
+# Sistema de módulos
+declare -A MODULE_CONFIGS
+MODULE_CONFIGS=(
+    [core]="core_config.yaml"
+    [network]="network_config.yaml"
+    [web]="web_config.yaml"
+    [mobile]="mobile_config.yaml"
+    [osint]="osint_config.yaml"
+    [exploitation]="exploitation_config.yaml"
+    [post-exploitation]="post_exploitation_config.yaml"
+    [forensics]="forensics_config.yaml"
+    [cracking]="cracking_config.yaml"
+    [social-engineering]="social_engineering_config.yaml"
+    [game-hacking]="game_hacking_config.yaml"
+    [custom]="custom_config.yaml"
 )
 
-# Enhanced Tool Management
-install_tool() {
-    local tool=$1
-    local version=$2
-    local repo_url=$3
+# Sistema de temas
+declare -A THEMES
+THEMES=(
+    [default]="\033[1;37m"
+    [matrix]="\033[1;32m"
+    [hacker]="\033[1;31m"
+    [cyberpunk]="\033[1;35m"
+    [stealth]="\033[1;30m"
+    [neon]="\033[1;36m"
+)
+
+# Sistema de animaciones
+declare -A ANIMATIONS
+ANIMATIONS=(
+    [loading]="⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏"
+    [scanning]="▰ ▱"
+    [hacking]="▁ ▂ ▃ ▄ ▅ ▆ ▇ █ ▇ ▆ ▅ ▄ ▃ ▂ ▁"
+    [processing]="◐ ◓ ◑ ◒"
+    [downloading]="⣾ ⣽ ⣻ ⢿ ⡿ ⣟ ⣯ ⣷"
+)
+
+# Repositorios de GitHub para cada herramienta
+declare -A GITHUB_REPOS=(
+    # OSINT (20 herramientas)
+    ["AllHackingTools"]="https://github.com/mishakorzik/AllHackingTools"
+    ["NetSoc_OSINT"]="https://github.com/XDeadHackerX/NetSoc_OSINT"
+    ["Recursos-Hacking-Etico"]="https://github.com/zamarrowski/recursos-hacking-etico"
+    ["OSINT-Framework"]="https://github.com/lockfale/osint-framework"
+    ["ReconDog"]="https://github.com/UltimateHackers/ReconDog"
+    ["OSINT-Tool"]="https://github.com/saikrishna321/OSINT-Tool"
+    ["XSS-Tools"]="https://github.com/An0nUD4Y/XSS-Tools"
+    ["D-TECT"]="https://github.com/An0nUD4Y/D-TECT"
+    ["TermuxHackingTools"]="https://github.com/Techzindia/TermuxHackingTools"
+    ["OSINT-Toolkit"]="https://github.com/saikrishna321/OSINT-Toolkit"
+    ["Hacking-Tools"]="https://github.com/An0nUD4Y/Hacking-Tools"
+    ["Phishing-Toolkit"]="https://github.com/Techzindia/Phishing-Toolkit"
+    ["Social-Engineering-Toolkit"]="https://github.com/trustedsec/social-engineer-toolkit"
+    ["Recon-ng"]="https://github.com/lanmaster53/recon-ng"
+    ["SpiderFoot"]="https://github.com/smicallef/spiderfoot"
+    ["Amass"]="https://github.com/owasp-amass/amass"
+    ["Sublist3r"]="https://github.com/aboul3la/Sublist3r"
+    ["Nmap"]="https://github.com/nmap/nmap"
+    ["Gobuster"]="https://github.com/OJ/gobuster"
+    ["Nikto"]="https://github.com/sullo/nikto"
+    ["Dirsearch"]="https://github.com/maurosoria/dirsearch"
+    ["Wfuzz"]="https://github.com/xmendez/wfuzz"
+    ["XSStrike"]="https://github.com/s0md3v/XSStrike"
+    ["SQLMap"]="https://github.com/sqlmapproject/sqlmap"
+    ["WPScan"]="https://github.com/wpscanteam/wpscan"
+    ["Burp-Suite"]="https://github.com/snoopysecurity/burp-suite-community-edition"
+    ["OWASP-ZAP"]="https://github.com/zaproxy/zaproxy"
+    ["BeEF"]="https://github.com/beefproject/beef"
+    ["Cewl"]="https://github.com/digininja/CeWL"
+    ["Hashcat"]="https://github.com/hashcat/hashcat"
+    ["John-the-Ripper"]="https://github.com/openwall/john"
+    ["Mimikatz"]="https://github.com/gentilkiwi/mimikatz"
+    ["Empire"]="https://github.com/BC-SECURITY/Empire"
+    ["BloodHound"]="https://github.com/BloodHoundAD/BloodHound"
+    ["CrackMapExec"]="https://github.com/Porchetta-Industries/CrackMapExec"
+    ["Responder"]="https://github.com/lgandx/Responder"
+    ["Impacket"]="https://github.com/SecureAuthCorp/impacket"
+    ["Kali-Linux"]="https://github.com/OffensiveSecurity/kali-linux"
+    ["Metasploit-Framework"]="https://github.com/rapid7/metasploit-framework"
+    ["Aircrack-ng"]="https://github.com/aircrack-ng/aircrack-ng"
+    ["Hydra"]="https://github.com/vanhauser-thc/thc-hydra"
+    ["Wireshark"]="https://github.com/wireshark/wireshark"
+    ["Tcpdump"]="https://github.com/the-tcpdump-group/tcpdump"
+    ["Scapy"]="https://github.com/secdev/scapy"
+    ["Bettercap"]="https://github.com/bettercap/bettercap"
+    ["Ettercap"]="https://github.com/Ettercap/ettercap"
+    ["Nessus"]="https://github.com/tenable/nessus"
+    ["OpenVAS"]="https://github.com/greenbone/openvas"
+    ["GVM"]="https://github.com/greenbone/gvm"
+    ["Nuclei"]="https://github.com/projectdiscovery/nuclei"
+    ["Subfinder"]="https://github.com/projectdiscovery/subfinder"
+    ["Naabu"]="https://github.com/projectdiscovery/naabu"
+    ["Dnsx"]="https://github.com/projectdiscovery/dnsx"
+    ["Httpx"]="https://github.com/projectdiscovery/httpx"
+    ["Proxify"]="https://github.com/projectdiscovery/proxify"
+    ["Notify"]="https://github.com/projectdiscovery/notify"
+    ["Chaos"]="https://github.com/projectdiscovery/chaos-client"
+    ["Katana"]="https://github.com/projectdiscovery/katana"
+    ["Interactsh"]="https://github.com/projectdiscovery/interactsh"
+    ["Cloudlist"]="https://github.com/projectdiscovery/cloudlist"
+    ["Uncover"]="https://github.com/projectdiscovery/uncover"
+    ["Pdtm"]="https://github.com/projectdiscovery/pdtm"
     
-    log "INFO" "Instalando $tool v$version..."
+    # Explotación Web (25 herramientas)
+    ["XSS-Tools"]="https://github.com/faizann24/XssPy"
+    ["D-TECT"]="https://github.com/shawarkhanethicalhacker/D-TECT"
+    ["XSStrike"]="https://github.com/s0md3v/XSStrike"
+    ["SQLMap"]="https://github.com/sqlmapproject/sqlmap"
+    ["WPScan"]="https://github.com/wpscanteam/wpscan"
+    ["Burp-Suite"]="https://github.com/PortSwigger/burp-suite-community"
+    ["OWASP-ZAP"]="https://github.com/zaproxy/zaproxy"
+    ["BeEF"]="https://github.com/beefproject/beef"
+    ["Commix"]="https://github.com/commixproject/commix"
+    ["WPSeku"]="https://github.com/m4ll0k/WPSeku"
+    ["Joomscan"]="https://github.com/rezasp/joomscan"
+    ["Wapiti"]="https://github.com/wapiti-scanner/wapiti"
+    ["W3af"]="https://github.com/andresriancho/w3af"
+    ["Arachni"]="https://github.com/Arachni/arachni"
+    ["Golismero"]="https://github.com/golismero/golismero"
+    ["Vega"]="https://github.com/subgraph/Vega"
+    ["Nikto"]="https://github.com/sullo/nikto"
+    ["Skipfish"]="https://github.com/spinkham/skipfish"
+    ["Wfuzz"]="https://github.com/xmendez/wfuzz"
+    ["Joomla-Scanner"]="https://github.com/drego85/Joomla-Scanner"
+    ["Drupal-Scan"]="https://github.com/r3dxpl0it/Drupal-Scan"
+    ["Wordpress-Scanner"]="https://github.com/wpscanteam/wpscan"
+    ["Joomla-Vulnerability-Scanner"]="https://github.com/rezasp/joomscan"
+    ["Drupal-Vulnerability-Scanner"]="https://github.com/droope/droopescan"
     
-    # Create tool directory
-    local tool_dir="$MODULES_DIR/${tool%%-*}/$tool"
-    mkdir -p "$tool_dir"
+    # Explotación y Post-Explotación (30 herramientas)
+    ["Metasploit"]="https://github.com/rapid7/metasploit-framework"
+    ["Empire"]="https://github.com/BC-SECURITY/Empire"
+    ["Cobalt-Strike"]="https://github.com/rsmudge/cobalt-strike"
+    ["Mimikatz"]="https://github.com/gentilkiwi/mimikatz"
+    ["CrackMapExec"]="https://github.com/byt3bl33d3r/CrackMapExec"
+    ["Impacket"]="https://github.com/SecureAuthCorp/impacket"
+    ["Responder"]="https://github.com/lgandx/Responder"
+    ["PowerSploit"]="https://github.com/PowerShellMafia/PowerSploit"
+    ["BloodHound"]="https://github.com/BloodHoundAD/BloodHound"
+    ["PrivExchange"]="https://github.com/dirkjanm/PrivExchange"
+    ["Rubeus"]="https://github.com/GhostPack/Rubeus"
+    ["SharpHound"]="https://github.com/BloodHoundAD/SharpHound"
+    ["Seatbelt"]="https://github.com/GhostPack/Seatbelt"
+    ["SharpUp"]="https://github.com/GhostPack/SharpUp"
+    ["SharpView"]="https://github.com/tevora-threat/SharpView"
+    ["SharpHound3"]="https://github.com/BloodHoundAD/SharpHound3"
+    ["SharpDPAPI"]="https://github.com/GhostPack/SharpDPAPI"
+    ["SharpDump"]="https://github.com/GhostPack/SharpDump"
+    ["SharpWMI"]="https://github.com/GhostPack/SharpWMI"
+    ["SharpRoast"]="https://github.com/GhostPack/SharpRoast"
+    ["SharpSploit"]="https://github.com/cobbr/SharpSploit"
+    ["SharpHound2"]="https://github.com/BloodHoundAD/SharpHound2"
+    ["SharpHound4"]="https://github.com/BloodHoundAD/SharpHound4"
+    ["SharpHound5"]="https://github.com/BloodHoundAD/SharpHound5"
+    ["SharpHound6"]="https://github.com/BloodHoundAD/SharpHound6"
+    ["SharpHound7"]="https://github.com/BloodHoundAD/SharpHound7"
+    ["SharpHound8"]="https://github.com/BloodHoundAD/SharpHound8"
+    ["SharpHound9"]="https://github.com/BloodHoundAD/SharpHound9"
+    ["SharpHound10"]="https://github.com/BloodHoundAD/SharpHound10"
     
-    # Clone repository
-    if ! git clone --depth 1 --branch "$version" "$repo_url" "$tool_dir"; then
-        log "ERROR" "Error al clonar $tool"
+    # Escaneo y Análisis de Red (20 herramientas)
+    ["Nmap"]="https://github.com/nmap/nmap"
+    ["Wireshark"]="https://github.com/wireshark/wireshark"
+    ["Bettercap"]="https://github.com/bettercap/bettercap"
+    ["Nessus"]="https://github.com/tenable/nessus"
+    ["Masscan"]="https://github.com/robertdavidgraham/masscan"
+    ["Zmap"]="https://github.com/zmap/zmap"
+    ["Netdiscover"]="https://github.com/netdiscover-scanner/netdiscover"
+    ["Netcat"]="https://github.com/diegocr/netcat"
+    ["Hping"]="https://github.com/antirez/hping"
+    ["Tcpdump"]="https://github.com/the-tcpdump-group/tcpdump"
+    ["Tshark"]="https://github.com/wireshark/wireshark"
+    ["Scapy"]="https://github.com/secdev/scapy"
+    ["Netcat"]="https://github.com/diegocr/netcat"
+    ["Netcat-traditional"]="https://github.com/diegocr/netcat"
+    ["Netcat-openbsd"]="https://github.com/diegocr/netcat"
+    ["Netcat-gnu"]="https://github.com/diegocr/netcat"
+    ["Netcat-bsd"]="https://github.com/diegocr/netcat"
+    ["Netcat-debian"]="https://github.com/diegocr/netcat"
+    ["Netcat-ubuntu"]="https://github.com/diegocr/netcat"
+    ["Netcat-kali"]="https://github.com/diegocr/netcat"
+    
+    # Hacking de Juegos (20 herramientas)
+    ["Metasploit-Framework"]="https://github.com/rapid7/metasploit-framework"
+    ["Game-Hacking"]="https://github.com/dsasmblr/game-hacking"
+    ["Game-Hacking-1"]="https://github.com/Mehardeep/game-hacking-1"
+    ["Cheat-Engine"]="https://github.com/dsasmblr/cheat-engine"
+    ["Squalr"]="https://github.com/Squalr/Squalr"
+    ["MungPlex"]="https://github.com/CosmoCortney/MungPlex"
+    ["GTA-SA-Cheats"]="https://github.com/Edward-P-Astbury/gta_sa_cheats"
+    ["Payback2-CHEATus"]="https://github.com/ABJ4403/Payback2_CHEATus"
+    ["SimCity-Cheat"]="https://github.com/souforte/SimCity-Cheat"
+    ["Warzone2100"]="https://github.com/Warzone2100/warzone2100"
+    ["StellarRealms"]="https://github.com/nagten/StellarRealms"
+    ["Hacking-Online-Games"]="https://github.com/dsasmblr/hacking-online-games"
+    ["Reloaded-Memory-SigScan"]="https://github.com/Reloaded-Project/Reloaded.Memory.SigScan"
+    ["GH-D3D11-Hook"]="https://github.com/guided-hacking/GH_D3D11_Hook"
+    ["Game-Hacks"]="https://github.com/topics/game-hacks"
+    ["Game-Hack-Menu"]="https://github.com/topics/game-hack-menu"
+    ["Hacking-Tools"]="https://github.com/topics/hacking-tools"
+    ["Game-Tweaks"]="https://github.com/topics/game-tweaks"
+    ["GameGuardian"]="https://github.com/GameGuardian/GameGuardian"
+    ["GameCIH"]="https://github.com/GameCIH/GameCIH"
+    ["GameKiller"]="https://github.com/GameKiller/GameKiller"
+    ["GameGuard"]="https://github.com/GameGuard/GameGuard"
+    ["GameHack"]="https://github.com/GameHack/GameHack"
+    ["GameTool"]="https://github.com/GameTool/GameTool"
+    ["GameMaster"]="https://github.com/GameMaster/GameMaster"
+    ["GameWarden"]="https://github.com/GameWarden/GameWarden"
+    
+    # Hacking de Aplicaciones Móviles (20 herramientas)
+    ["WhatsAppHacking"]="https://github.com/WhatsAppHacking/WhatsAppHacking"
+    ["Android-Studio"]="https://github.com/android/studio"
+    ["APKTool"]="https://github.com/iBotPeaches/Apktool"
+    ["Dex2Jar"]="https://github.com/pxb1988/dex2jar"
+    ["Frida"]="https://github.com/frida/frida"
+    ["Objection"]="https://github.com/sensepost/objection"
+    ["MobSF"]="https://github.com/MobSF/Mobile-Security-Framework-MobSF"
+    ["JADX"]="https://github.com/skylot/jadx"
+    ["Ghidra"]="https://github.com/NationalSecurityAgency/ghidra"
+    ["Radare2"]="https://github.com/radareorg/radare2"
+    ["APK-MITM"]="https://github.com/shroudedcode/apk-mitm"
+    ["APKLeaks"]="https://github.com/dwisiswant0/apkleaks"
+    ["APK-Downloader"]="https://github.com/APK-Downloader/APK-Downloader"
+    ["Android-Tools"]="https://github.com/android/tools"
+    ["Android-SDK"]="https://github.com/android/sdk"
+    ["Android-NDK"]="https://github.com/android/ndk"
+    ["Android-Platform"]="https://github.com/android/platform"
+    ["Android-Framework"]="https://github.com/android/framework"
+    ["Android-System"]="https://github.com/android/system"
+    ["Android-Kernel"]="https://github.com/android/kernel"
+    
+    # Herramientas de Hacking Ético (50 herramientas)
+    ["Metasploit-Framework"]="https://github.com/rapid7/metasploit-framework"
+    ["Nmap"]="https://github.com/nmap/nmap"
+    ["SQLMap"]="https://github.com/sqlmapproject/sqlmap"
+    ["Mimikatz"]="https://github.com/gentilkiwi/mimikatz"
+    ["Aircrack-ng"]="https://github.com/aircrack-ng/aircrack-ng"
+    ["Wireshark"]="https://github.com/wireshark/wireshark"
+    ["Burp-Suite"]="https://github.com/snoopysecurity/burp-suite-community-edition"
+    ["Empire"]="https://github.com/BC-SECURITY/Empire"
+    ["Hydra"]="https://github.com/vanhauser-thc/thc-hydra"
+    ["Bettercap"]="https://github.com/bettercap/bettercap"
+    ["John-the-Ripper"]="https://github.com/openwall/john"
+    ["Hashcat"]="https://github.com/hashcat/hashcat"
+    ["OWASP-ZAP"]="https://github.com/zaproxy/zaproxy"
+    ["Sublist3r"]="https://github.com/aboul3la/Sublist3r"
+    ["Nuclei"]="https://github.com/projectdiscovery/nuclei"
+    ["Gobuster"]="https://github.com/OJ/gobuster"
+    ["XSStrike"]="https://github.com/s0md3v/XSStrike"
+    ["Social-Engineering-Toolkit"]="https://github.com/trustedsec/social-engineer-toolkit"
+    ["GoPhish"]="https://github.com/gophish/gophish"
+    ["BloodHound"]="https://github.com/BloodHoundAD/BloodHound"
+    ["CrackMapExec"]="https://github.com/Porchetta-Industries/CrackMapExec"
+    ["Responder"]="https://github.com/lgandx/Responder"
+    ["Impacket"]="https://github.com/SecureAuthCorp/impacket"
+    ["Recon-ng"]="https://github.com/lanmaster53/recon-ng"
+    ["SpiderFoot"]="https://github.com/smicallef/spiderfoot"
+    ["Amass"]="https://github.com/owasp-amass/amass"
+    ["Fierce"]="https://github.com/mschwager/fierce"
+    ["Subfinder"]="https://github.com/projectdiscovery/subfinder"
+    ["Dirsearch"]="https://github.com/maurosoria/dirsearch"
+    ["Nikto"]="https://github.com/sullo/nikto"
+    ["Skipfish"]="https://github.com/spinkham/skipfish"
+    ["Wfuzz"]="https://github.com/xmendez/wfuzz"
+    ["Sqlninja"]="https://github.com/sqlninja/sqlninja"
+    ["Nessus"]="https://github.com/tenable/nessus"
+    ["Zphisher"]="https://github.com/htr-tech/zphisher"
+    ["Maltego"]="https://github.com/paterva/maltego"
+    ["Osmedeus"]="https://github.com/j3ssie/Osmedeus"
+    ["Red-Team-Attack-Lab"]="https://github.com/infosecn1nja/Red-Teaming-Toolkit"
+    ["Vega"]="https://github.com/subgraph/Vega"
+    ["Cobalt-Strike"]="https://github.com/Fortra/Cobalt-Strike"
+    ["Mudge-Password-Tools"]="https://github.com/mudgen/"
+    ["Cewl"]="https://github.com/digininja/CeWL"
+    ["T50"]="https://github.com/s0lst1c3/t50"
+    ["Nginx-Helper"]="https://github.com/rbenv/nginx_helper"
+    ["Crackstation"]="https://github.com/crackstation/"
+    ["ProxyChains"]="https://github.com/haad/proxychains"
+    ["GoReverseShell"]="https://github.com/danielmiessler/GoReverseShell"
+    ["Scapy"]="https://github.com/secdev/scapy"
+    ["Tcpdump"]="https://github.com/the-tcpdump-group/tcpdump"
+    ["Ettercap"]="https://github.com/Ettercap/ettercap"
+    ["OpenVAS"]="https://github.com/greenbone/openvas"
+    ["GVM"]="https://github.com/greenbone/gvm"
+    ["Naabu"]="https://github.com/projectdiscovery/naabu"
+    ["Dnsx"]="https://github.com/projectdiscovery/dnsx"
+    ["Httpx"]="https://github.com/projectdiscovery/httpx"
+    ["Proxify"]="https://github.com/projectdiscovery/proxify"
+    ["Notify"]="https://github.com/projectdiscovery/notify"
+    ["Chaos"]="https://github.com/projectdiscovery/chaos-client"
+    ["Katana"]="https://github.com/projectdiscovery/katana"
+    ["Interactsh"]="https://github.com/projectdiscovery/interactsh"
+    ["Cloudlist"]="https://github.com/projectdiscovery/cloudlist"
+    ["Uncover"]="https://github.com/projectdiscovery/uncover"
+    ["Pdtm"]="https://github.com/projectdiscovery/pdtm"
+)
+
+# Required Dependencies and Tools
+declare -a REQUIRED_DEPENDENCIES=(
+    "python3"
+    "git"
+    "java"
+    "ruby"
+    "perl"
+    "gcc"
+    "make"
+    "wget"
+    "curl"
+)
+
+declare -a REQUIRED_TOOLS=(
+    "nmap"
+    "sqlmap"
+    "metasploit-framework"
+    "wireshark"
+    "burpsuite"
+    "aircrack-ng"
+)
+
+# Función mejorada para mostrar la pantalla de carga
+show_loading_screen() {
+    local total_steps=7
+    local current_step=0
+    
+    # Paso 1: Inicialización del sistema
+    clear
+    echo -e "${THEMES['matrix']}"
+    echo "  ███████╗ ██████╗ ██╗  ██╗██╗██╗  ██╗"
+    echo "  ██╔════╝██╔═══██╗██║ ██╔╝██║╚██╗██╔╝"
+    echo "  ███████╗██║   ██║█████╔╝ ██║ ╚███╔╝ "
+    echo "  ╚════██║██║   ██║██╔═██╗ ██║ ██╔██╗ "
+    echo "  ███████║╚██████╔╝██║  ██╗██║██╔╝ ██╗"
+    echo "  ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝╚═╝  ╚═╝"
+    echo -e "${COLORS['NC']}"
+    echo -e "${COLORS['CYAN']}Professional Ethical Hacking Environment v$VERSION${COLORS['NC']}"
+    echo -e "${COLORS['YELLOW']}Copyright (c) 2024 SOKIX Security Team${COLORS['NC']}"
+    echo
+    
+    show_system_info
+    
+    current_step=$((current_step + 1))
+    show_progress "Inicializando sistema" $current_step $total_steps
+    
+    # Paso 2: Autodiagnóstico
+    perform_diagnostic
+    current_step=$((current_step + 1))
+    show_progress "Diagnóstico completado" $current_step $total_steps
+    
+    # Paso 3: Descargando herramientas
+    echo -e "\n${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['CYAN']}${UNICODE['DOWNLOAD']} Descargando herramientas... ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    
+    local total_tools=${#GITHUB_REPOS[@]}
+    local current_tool=0
+    
+    # Crear directorio de herramientas si no existe
+    mkdir -p "$TOOLS_DIR"
+    
+    for tool in "${!GITHUB_REPOS[@]}"; do
+        current_tool=$((current_tool + 1))
+        local progress=$((current_tool * 100 / total_tools))
+        
+        # Mostrar barra de progreso
+        echo -ne "\r${COLORS['CYAN']}["
+        for ((i=0; i<50; i++)); do
+            if [ $i -lt $((progress / 2)) ]; then
+                echo -ne "${ANIMATIONS['downloading'][$((i % ${#ANIMATIONS['downloading'][@]}))]}"
+            else
+                echo -ne " "
+            fi
+        done
+        echo -ne "] Descargando $tool...${COLORS['NC']}"
+        
+        # Instalar la herramienta
+        install_tool "$tool"
+        
+        # Verificar si la instalación fue exitosa
+        if [ $? -eq 0 ]; then
+            echo -e "\r${COLORS['GREEN']}${UNICODE['SUCCESS']} $tool instalado correctamente${COLORS['NC']}"
+        else
+            echo -e "\r${COLORS['RED']}${UNICODE['ERROR']} Error al instalar $tool${COLORS['NC']}"
+        fi
+    done
+    
+    current_step=$((current_step + 1))
+    show_progress "Herramientas descargadas" $current_step $total_steps
+    
+    # Paso 4: Cargando módulos con animación
+    echo -e "\n${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['CYAN']}${UNICODE['GEAR']} Cargando módulos del sistema... ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    
+    for module in "${MODULES[@]}"; do
+        show_module_loading "$module"
+        load_module "$module"
+    done
+    
+    current_step=$((current_step + 1))
+    show_progress "Módulos cargados" $current_step $total_steps
+    
+    # Paso 5: Verificando dependencias con animación
+    echo -e "\n${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['CYAN']}${UNICODE['PACKAGE']} Verificando dependencias... ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    
+    check_dependencies
+    
+    current_step=$((current_step + 1))
+    show_progress "Dependencias verificadas" $current_step $total_steps
+    
+    # Paso 6: Configurando entorno con animación
+    echo -e "\n${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['CYAN']}${UNICODE['WRENCH']} Configurando entorno... ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    
+    setup_environment
+    
+    current_step=$((current_step + 1))
+    show_progress "Entorno configurado" $current_step $total_steps
+    
+    # Paso 7: Inicializando herramientas con animación
+    echo -e "\n${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['CYAN']}${UNICODE['TOOLS']} Inicializando herramientas... ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    
+    initialize_tools
+    
+    current_step=$((current_step + 1))
+    show_progress "Herramientas inicializadas" $current_step $total_steps
+    
+    # Paso 8: Finalización con resumen
+    echo -e "\n${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['CYAN']}${UNICODE['CHART']} Resumen del sistema: ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    show_system_summary
+    
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_BOTTOM']}${COLORS['NC']}"
+    echo -e "${COLORS['GREEN']}${UNICODE['SUCCESS']} Toolkit inicializado correctamente${COLORS['NC']}"
+    sleep 2
+}
+
+# Función para mostrar información del sistema
+show_system_info() {
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_TOP']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['CYAN']}${UNICODE['TERMINAL']} Información del Sistema ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    
+    local os_info=$(uname -a)
+    local cpu_info=$(cat /proc/cpuinfo | grep "model name" | head -n 1 | cut -d ":" -f 2)
+    local mem_info=$(free -h | grep Mem | awk '{print $2}')
+    local disk_info=$(df -h / | tail -n 1 | awk '{print $2}')
+    
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['YELLOW']}Sistema Operativo:${COLORS['NC']} $os_info ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['YELLOW']}Procesador:${COLORS['NC']} $cpu_info ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['YELLOW']}Memoria:${COLORS['NC']} $mem_info ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['YELLOW']}Disco:${COLORS['NC']} $disk_info ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_BOTTOM']}${COLORS['NC']}"
+}
+
+# Función para realizar el diagnóstico del sistema
+perform_diagnostic() {
+    for check in "${!DIAGNOSTIC_CHECKS[@]}"; do
+        echo -ne "\r${COLORS['CYAN']}["
+        for ((i=0; i<50; i++)); do
+            echo -ne "${ANIMATIONS['scanning'][$((i % ${#ANIMATIONS['scanning'][@]}))]}"
+        done
+        echo -ne "] ${DIAGNOSTIC_CHECKS[$check]}...${COLORS['NC']}"
+        
+        case $check in
+            "system")
+                check_system
+                ;;
+            "network")
+                check_network
+                ;;
+            "security")
+                check_security
+                ;;
+            "performance")
+                check_performance
+                ;;
+            "dependencies")
+                check_dependencies
+                ;;
+            "tools")
+                check_tools
+                ;;
+            "permissions")
+                check_permissions
+                ;;
+            "storage")
+                check_storage
+                ;;
+            "memory")
+                check_memory
+                ;;
+            "cpu")
+                check_cpu
+                ;;
+        esac
+        
+        sleep 0.5
+    done
+    echo
+}
+
+# Función para mostrar la carga de módulos con animación
+show_module_loading() {
+    local module=$1
+    echo -ne "\r${COLORS['CYAN']}["
+    for ((i=0; i<50; i++)); do
+        echo -ne "${ANIMATIONS['processing'][$((i % ${#ANIMATIONS['processing'][@]}))]}"
+    done
+    echo -ne "] Cargando módulo: $module...${COLORS['NC']}"
+    sleep 0.3
+}
+
+# Función para mostrar resumen del sistema
+show_system_summary() {
+    local total_modules=${#MODULES[@]}
+    local total_tools=$(ls "$TOOLS_DIR" | wc -l)
+    local system_status="OK"
+    local security_status="OK"
+    local performance_status="OK"
+    
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['YELLOW']}Módulos cargados:${COLORS['NC']} $total_modules ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['YELLOW']}Herramientas instaladas:${COLORS['NC']} $total_tools ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['YELLOW']}Estado del sistema:${COLORS['NC']} $system_status ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['YELLOW']}Estado de seguridad:${COLORS['NC']} $security_status ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['YELLOW']}Rendimiento:${COLORS['NC']} $performance_status ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+}
+
+# Funciones de diagnóstico específicas
+check_system() {
+    # Check system requirements
+    if [ "$(uname)" != "Linux" ]; then
+        echo -e "${COLORS['RED']}Warning: This toolkit is optimized for Linux systems${COLORS['NC']}"
         return 1
     fi
-    
-    # Install dependencies
-    if [ -f "$tool_dir/requirements.txt" ]; then
-        log "INFO" "Instalando dependencias para $tool..."
-        pip3 install -r "$tool_dir/requirements.txt"
-    fi
-    
-    # Set permissions
-    find "$tool_dir" -type f -exec chmod 750 {} \;
-    find "$tool_dir" -type d -exec chmod 755 {} \;
-    
-    log "SUCCESS" "$tool instalado correctamente"
     return 0
 }
 
-# Enhanced Backup System
-create_backup() {
-    local backup_name="sokix_backup_$(date +%Y%m%d_%H%M%S)"
-    local backup_dir="$BACKUP_DIR/$backup_name"
-    
-    log "INFO" "Creando copia de seguridad..."
-    
-    mkdir -p "$backup_dir"
-    
-    # Backup configuration
-    cp -r "$CONFIG_FILE" "$backup_dir/config.yaml"
-    
-    # Backup modules
-    cp -r "$MODULES_DIR" "$backup_dir/modules"
-    
-    # Backup plugins
-    cp -r "$PLUGINS_DIR" "$backup_dir/plugins"
-    
-    # Backup scripts
-    cp -r "$SCRIPTS_DIR" "$backup_dir/scripts"
-    
-    # Create backup manifest
-    cat > "$backup_dir/manifest.json" << EOF
-{
-    "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
-    "version": "$VERSION",
-    "toolkit_name": "$TOOLKIT_NAME",
-    "size": "$(du -sh "$backup_dir" | cut -f1)"
-}
-EOF
-    
-    # Compress backup
-    tar -czf "$BACKUP_DIR/$backup_name.tar.gz" -C "$BACKUP_DIR" "$backup_name"
-    rm -rf "$backup_dir"
-    
-    log "SUCCESS" "Backup creado: $backup_name.tar.gz"
-}
-
-# Enhanced Security Functions
-encrypt_data() {
-    local data=$1
-    local key=$2
-    
-    echo "$data" | openssl enc -aes-256-cbc -salt -pass pass:"$key" -base64
-}
-
-decrypt_data() {
-    local encrypted_data=$1
-    local key=$2
-    
-    echo "$encrypted_data" | openssl enc -d -aes-256-cbc -salt -pass pass:"$key" -base64
-}
-
-# Enhanced Performance Optimization
-optimize_performance() {
-    log "INFO" "Optimizando rendimiento..."
-    
-    # Adjust system limits
-    ulimit -n 65535
-    ulimit -u 65535
-    
-    # Enable performance governor
-    if command -v cpufreq-set &> /dev/null; then
-        cpufreq-set -g performance
-    fi
-    
-    # Optimize network settings
-    sysctl -w net.core.rmem_max=16777216
-    sysctl -w net.core.wmem_max=16777216
-    sysctl -w net.ipv4.tcp_rmem="4096 87380 16777216"
-    sysctl -w net.ipv4.tcp_wmem="4096 87380 16777216"
-    
-    log "SUCCESS" "Optimización de rendimiento completada"
-}
-
-# Enhanced Cleanup
-cleanup() {
-    log "INFO" "Limpiando recursos..."
-    
-    # Remove temporary files
-    rm -rf "$TEMP_DIR"/*
-    
-    # Clear cache if too large
-    local cache_size=$(du -sm "$CACHE_DIR" | cut -f1)
-    if [ "$cache_size" -gt 1024 ]; then
-        log "WARNING" "Cache demasiado grande ($cache_size MB), limpiando..."
-        rm -rf "$CACHE_DIR"/*
-    fi
-    
-    # Rotate logs
-    if [ -f "$LOG_FILE" ]; then
-        local log_size=$(du -m "$LOG_FILE" | cut -f1)
-        if [ "$log_size" -gt 100 ]; then
-            log "INFO" "Rotando logs..."
-            mv "$LOG_FILE" "$LOG_FILE.old"
-            touch "$LOG_FILE"
-        fi
-    fi
-    
-    log "SUCCESS" "Limpieza completada"
-}
-
-# Enhanced Auto-Diagnostic System
-perform_auto_diagnostic() {
-    log "INFO" "Iniciando diagnóstico automático del sistema..."
-    
-    # Create diagnostic log
-    echo "=== SOKIX Toolkit Auto-Diagnostic Report ===" > "$DIAGNOSTIC_FILE"
-    echo "Timestamp: $(date)" >> "$DIAGNOSTIC_FILE"
-    echo "Version: $VERSION" >> "$DIAGNOSTIC_FILE"
-    
-    # System Information
-    echo -e "\n=== System Information ===" >> "$DIAGNOSTIC_FILE"
-    echo "OS: $(uname -a)" >> "$DIAGNOSTIC_FILE"
-    echo "Kernel: $(uname -r)" >> "$DIAGNOSTIC_FILE"
-    echo "Architecture: $(uname -m)" >> "$DIAGNOSTIC_FILE"
-    
-    # CPU Information
-    echo -e "\n=== CPU Information ===" >> "$DIAGNOSTIC_FILE"
-    echo "CPU Model: $(cat /proc/cpuinfo | grep 'model name' | head -1 | cut -d: -f2)" >> "$DIAGNOSTIC_FILE"
-    echo "CPU Cores: $(nproc)" >> "$DIAGNOSTIC_FILE"
-    echo "CPU Usage: $(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1"%"}')" >> "$DIAGNOSTIC_FILE"
-    
-    # Memory Information
-    echo -e "\n=== Memory Information ===" >> "$DIAGNOSTIC_FILE"
-    echo "Total RAM: $(free -h | grep Mem | awk '{print $2}')" >> "$DIAGNOSTIC_FILE"
-    echo "Used RAM: $(free -h | grep Mem | awk '{print $3}')" >> "$DIAGNOSTIC_FILE"
-    echo "Free RAM: $(free -h | grep Mem | awk '{print $4}')" >> "$DIAGNOSTIC_FILE"
-    
-    # Disk Information
-    echo -e "\n=== Disk Information ===" >> "$DIAGNOSTIC_FILE"
-    echo "Total Disk: $(df -h / | awk 'NR==2 {print $2}')" >> "$DIAGNOSTIC_FILE"
-    echo "Used Disk: $(df -h / | awk 'NR==2 {print $3}')" >> "$DIAGNOSTIC_FILE"
-    echo "Free Disk: $(df -h / | awk 'NR==2 {print $4}')" >> "$DIAGNOSTIC_FILE"
-    
-    # Network Information
-    echo -e "\n=== Network Information ===" >> "$DIAGNOSTIC_FILE"
-    echo "IP Address: $(hostname -I | awk '{print $1}')" >> "$DIAGNOSTIC_FILE"
-    echo "Network Interfaces: $(ip link show | grep '^[0-9]' | awk -F: '{print $2}')" >> "$DIAGNOSTIC_FILE"
-    
-    # Performance Metrics
-    echo -e "\n=== Performance Metrics ===" >> "$DIAGNOSTIC_FILE"
-    echo "Load Average: $(uptime | awk '{print $10 $11 $12}')" >> "$DIAGNOSTIC_FILE"
-    echo "IO Wait: $(iostat -c | awk 'NR==4 {print $4}')%" >> "$DIAGNOSTIC_FILE"
-    echo "Context Switches: $(vmstat 1 2 | tail -1 | awk '{print $12}')" >> "$DIAGNOSTIC_FILE"
-    
-    # Security Checks
-    echo -e "\n=== Security Checks ===" >> "$DIAGNOSTIC_FILE"
-    echo "SELinux Status: $(getenforce)" >> "$DIAGNOSTIC_FILE"
-    echo "Firewall Status: $(systemctl is-active firewalld)" >> "$DIAGNOSTIC_FILE"
-    echo "Last Security Updates: $(rpm -qa --last | grep security | head -1)" >> "$DIAGNOSTIC_FILE"
-    
-    # Tool Dependencies
-    echo -e "\n=== Tool Dependencies ===" >> "$DIAGNOSTIC_FILE"
-    for cmd in "${REQUIRED_COMMANDS[@]}"; do
-        if command -v "$cmd" &> /dev/null; then
-            echo "$cmd: Installed ($(which $cmd))" >> "$DIAGNOSTIC_FILE"
-        else
-            echo "$cmd: Not Installed" >> "$DIAGNOSTIC_FILE"
-        fi
-    done
-    
-    # Performance Optimization Recommendations
-    echo -e "\n=== Performance Optimization Recommendations ===" >> "$DIAGNOSTIC_FILE"
-    local cpu_cores=$(nproc)
-    local total_ram=$(free -m | awk '/^Mem:/{print $2}')
-    local free_space=$(df -BG / | awk 'NR==2 {print $4}' | sed 's/G//')
-    
-    if [ "$cpu_cores" -lt "$MIN_CPU_CORES" ]; then
-        echo "WARNING: CPU cores below minimum requirement. Consider upgrading hardware." >> "$DIAGNOSTIC_FILE"
-    fi
-    
-    if [ "$total_ram" -lt "$MIN_RAM_MB" ]; then
-        echo "WARNING: RAM below minimum requirement. Consider upgrading hardware." >> "$DIAGNOSTIC_FILE"
-    fi
-    
-    if [ "$free_space" -lt "$MIN_DISK_GB" ]; then
-        echo "WARNING: Disk space below minimum requirement. Consider freeing up space." >> "$DIAGNOSTIC_FILE"
-    fi
-    
-    # Automatic Performance Optimization
-    optimize_performance_auto
-    
-    log "SUCCESS" "Diagnóstico automático completado. Ver $DIAGNOSTIC_FILE para detalles."
-}
-
-# Enhanced Automatic Performance Optimization
-optimize_performance_auto() {
-    log "INFO" "Iniciando optimización automática de rendimiento..."
-    
-    # Create performance log
-    echo "=== SOKIX Toolkit Performance Optimization ===" > "$PERFORMANCE_FILE"
-    echo "Timestamp: $(date)" >> "$PERFORMANCE_FILE"
-    
-    # CPU Optimization
-    echo -e "\n=== CPU Optimization ===" >> "$PERFORMANCE_FILE"
-    if command -v cpufreq-set &> /dev/null; then
-        cpufreq-set -g performance
-        echo "CPU Governor set to performance mode" >> "$PERFORMANCE_FILE"
-    fi
-    
-    # Memory Optimization
-    echo -e "\n=== Memory Optimization ===" >> "$PERFORMANCE_FILE"
-    sysctl -w vm.swappiness=10
-    sysctl -w vm.dirty_ratio=60
-    sysctl -w vm.dirty_background_ratio=2
-    echo "Memory parameters optimized" >> "$PERFORMANCE_FILE"
-    
-    # Network Optimization
-    echo -e "\n=== Network Optimization ===" >> "$PERFORMANCE_FILE"
-    sysctl -w net.core.rmem_max=16777216
-    sysctl -w net.core.wmem_max=16777216
-    sysctl -w net.ipv4.tcp_rmem="4096 87380 16777216"
-    sysctl -w net.ipv4.tcp_wmem="4096 87380 16777216"
-    sysctl -w net.ipv4.tcp_window_scaling=1
-    sysctl -w net.ipv4.tcp_timestamps=1
-    sysctl -w net.ipv4.tcp_sack=1
-    sysctl -w net.core.somaxconn=65535
-    sysctl -w net.ipv4.tcp_max_syn_backlog=65535
-    echo "Network parameters optimized" >> "$PERFORMANCE_FILE"
-    
-    # Disk I/O Optimization
-    echo -e "\n=== Disk I/O Optimization ===" >> "$PERFORMANCE_FILE"
-    sysctl -w vm.dirty_writeback_centisecs=100
-    sysctl -w vm.dirty_expire_centisecs=500
-    echo "Disk I/O parameters optimized" >> "$PERFORMANCE_FILE"
-    
-    # System Limits
-    echo -e "\n=== System Limits ===" >> "$PERFORMANCE_FILE"
-    ulimit -n 65535
-    ulimit -u 65535
-    echo "System limits increased" >> "$PERFORMANCE_FILE"
-    
-    # Cache Optimization
-    echo -e "\n=== Cache Optimization ===" >> "$PERFORMANCE_FILE"
-    if [ -d "$CACHE_DIR" ]; then
-        find "$CACHE_DIR" -type f -mtime +7 -delete
-        echo "Cache cleaned" >> "$PERFORMANCE_FILE"
-    fi
-    
-    log "SUCCESS" "Optimización automática de rendimiento completada. Ver $PERFORMANCE_FILE para detalles."
-}
-
-# Kali Linux Specific Configuration
-check_kali_linux() {
-    log "INFO" "Verificando compatibilidad con Kali Linux..."
-    
-    # Check if running on Kali Linux
-    if [ -f "/etc/os-release" ]; then
-        if grep -q "Kali GNU/Linux" /etc/os-release; then
-            log "SUCCESS" "Sistema Kali Linux detectado"
-            
-            # Check Kali version
-            local kali_version=$(grep "VERSION=" /etc/os-release | cut -d'"' -f2)
-            log "INFO" "Versión de Kali: $kali_version"
-            
-            # Check Kali repositories
-            if [ -f "/etc/apt/sources.list" ]; then
-                if grep -q "kali.org" /etc/apt/sources.list; then
-                    log "SUCCESS" "Repositorios oficiales de Kali configurados"
-                else
-                    log "WARNING" "Repositorios oficiales de Kali no encontrados"
-                    configure_kali_repositories
-                fi
-            fi
-            
-            # Check Kali metapackages
-            check_kali_metapackages
-            
-            # Configure Kali specific settings
-            configure_kali_settings
-            
-            return 0
-        else
-            log "ERROR" "Este sistema no es Kali Linux"
-            return 1
-        fi
-    else
-        log "ERROR" "No se puede determinar el sistema operativo"
+check_network() {
+    # Check network connectivity
+    if ! ping -c 1 google.com &> /dev/null; then
+        echo -e "${COLORS['RED']}No internet connection${COLORS['NC']}"
         return 1
     fi
+    return 0
 }
 
-configure_kali_repositories() {
-    log "INFO" "Configurando repositorios oficiales de Kali..."
-    
-    # Backup original sources.list
-    cp /etc/apt/sources.list /etc/apt/sources.list.bak
-    
-    # Add official Kali repositories
-    cat > /etc/apt/sources.list << EOF
-deb http://http.kali.org/kali kali-rolling main contrib non-free
-deb-src http://http.kali.org/kali kali-rolling main contrib non-free
-EOF
-    
-    # Update package lists
-    apt-get update
-    
-    log "SUCCESS" "Repositorios de Kali configurados correctamente"
+check_security() {
+    # Check security settings
+    if [ "$(id -u)" != "0" ]; then
+        echo -e "${COLORS['YELLOW']}Running without root privileges${COLORS['NC']}"
+        return 1
+    fi
+    return 0
 }
 
-check_kali_metapackages() {
-    log "INFO" "Verificando metapaquetes de Kali..."
+check_performance() {
+    # Check system performance
+    local load=$(uptime | awk '{print $(NF-2)}' | tr -d ',')
+    if (( $(echo "$load > 2.0" | bc -l) )); then
+        echo -e "${COLORS['YELLOW']}High system load detected${COLORS['NC']}"
+        return 1
+    fi
+    return 0
+}
+
+check_dependencies() {
+    # Check required dependencies
+    local missing_deps=()
+    for dep in "${REQUIRED_DEPENDENCIES[@]}"; do
+        if ! command -v "$dep" &> /dev/null; then
+            missing_deps+=("$dep")
+        fi
+    done
     
-    local required_metapackages=(
-        "kali-linux-core"
-        "kali-linux-default"
-        "kali-tools-top10"
-        "kali-tools-web"
-        "kali-tools-database"
-        "kali-tools-passwords"
-        "kali-tools-wireless"
-        "kali-tools-reverse-engineering"
-        "kali-tools-exploitation"
-        "kali-tools-social-engineering"
-        "kali-tools-sniffing-spoofing"
-        "kali-tools-vulnerability"
-        "kali-tools-forensics"
-        "kali-tools-reporting"
+    if [ ${#missing_deps[@]} -gt 0 ]; then
+        echo -e "${COLORS['RED']}Missing dependencies: ${missing_deps[*]}${COLORS['NC']}"
+        return 1
+    fi
+    return 0
+}
+
+check_tools() {
+    # Check if required tools are installed
+    local missing_tools=()
+    for tool in "${REQUIRED_TOOLS[@]}"; do
+        if ! command -v "$tool" &> /dev/null; then
+            missing_tools+=("$tool")
+        fi
+    done
+    
+    if [ ${#missing_tools[@]} -gt 0 ]; then
+        echo -e "${COLORS['RED']}Missing tools: ${missing_tools[*]}${COLORS['NC']}"
+        return 1
+    fi
+    return 0
+}
+
+check_permissions() {
+    # Check file permissions
+    if [ ! -w "$LOG_FILE" ]; then
+        echo -e "${COLORS['RED']}Cannot write to log file${COLORS['NC']}"
+        return 1
+    fi
+    return 0
+}
+
+check_storage() {
+    # Check available storage
+    local available_space=$(df -h / | awk 'NR==2 {print $4}')
+    if [ "${available_space%G}" -lt 5 ]; then
+        echo -e "${COLORS['YELLOW']}Low disk space: $available_space${COLORS['NC']}"
+        return 1
+    fi
+    return 0
+}
+
+check_memory() {
+    # Check available memory
+    local available_mem=$(free -m | awk 'NR==2 {print $7}')
+    if [ "$available_mem" -lt 1024 ]; then
+        echo -e "${COLORS['YELLOW']}Low memory: ${available_mem}MB${COLORS['NC']}"
+        return 1
+    fi
+    return 0
+}
+
+check_cpu() {
+    # Check CPU usage
+    local cpu_usage=$(top -bn1 | grep "Cpu(s)" | awk '{print $2}')
+    if (( $(echo "$cpu_usage > 80" | bc -l) )); then
+        echo -e "${COLORS['YELLOW']}High CPU usage: ${cpu_usage}%${COLORS['NC']}"
+        return 1
+    fi
+    return 0
+}
+
+# Función para mostrar progreso con animación
+show_progress() {
+    local message=$1
+    local current=$2
+    local total=$3
+    local width=50
+    local progress=$((current * width / total))
+    local remaining=$((width - progress))
+    
+    echo -ne "\r${COLORS['CYAN']}["
+    for ((i=0; i<progress; i++)); do
+        echo -ne "${ANIMATIONS['hacking'][$((i % ${#ANIMATIONS['hacking'][@]}))]}"
+    done
+    for ((i=0; i<remaining; i++)); do
+        echo -ne " "
+    done
+    echo -ne "] ${message}...${COLORS['NC']}"
+}
+
+# Función para cargar módulos
+load_module() {
+    local module=$1
+    local config_file="${MODULE_CONFIGS[$module]}"
+    
+    if [ -f "$CONFIG_DIR/$config_file" ]; then
+        source "$CONFIG_DIR/$config_file"
+        echo -e "${COLORS['GREEN']}${UNICODE['SUCCESS']} Módulo $module cargado${COLORS['NC']}"
+    else
+        echo -e "${COLORS['YELLOW']}${UNICODE['WARNING']} Configuración no encontrada para $module${COLORS['NC']}"
+    fi
+}
+
+# Función para verificar dependencias
+check_dependencies() {
+    local dependencies=(
+        "python3"
+        "git"
+        "java"
+        "ruby"
+        "perl"
+        "gcc"
+        "make"
+        "wget"
+        "curl"
+        "nmap"
+        "sqlmap"
+        "metasploit-framework"
     )
     
-    for pkg in "${required_metapackages[@]}"; do
-        if ! dpkg -l | grep -q "^ii  $pkg "; then
-            log "WARNING" "Metapaquete $pkg no instalado"
-            install_kali_metapackage "$pkg"
+    for dep in "${dependencies[@]}"; do
+        if ! command -v "$dep" >/dev/null 2>&1; then
+            echo -e "${COLORS['YELLOW']}${UNICODE['WARNING']} $dep no está instalado${COLORS['NC']}"
+            install_dependency "$dep"
         fi
     done
 }
 
-install_kali_metapackage() {
-    local pkg=$1
-    log "INFO" "Instalando metapaquete $pkg..."
+# Función para instalar dependencias
+install_dependency() {
+    local dep=$1
+    echo -e "${COLORS['CYAN']}Instalando $dep...${COLORS['NC']}"
     
-    apt-get install -y "$pkg"
-    
-    if [ $? -eq 0 ]; then
-        log "SUCCESS" "Metapaquete $pkg instalado correctamente"
+    if command -v apt-get >/dev/null 2>&1; then
+        sudo apt-get install -y "$dep"
+    elif command -v yum >/dev/null 2>&1; then
+        sudo yum install -y "$dep"
+    elif command -v pacman >/dev/null 2>&1; then
+        sudo pacman -S --noconfirm "$dep"
     else
-        log "ERROR" "Error al instalar metapaquete $pkg"
+        echo -e "${COLORS['RED']}${UNICODE['ERROR']} No se pudo instalar $dep${COLORS['NC']}"
     fi
 }
 
-configure_kali_settings() {
-    log "INFO" "Configurando ajustes específicos de Kali..."
+# Función para configurar el entorno
+setup_environment() {
+    # Configurar variables de entorno
+    export PATH="$PATH:$TOOLS_DIR/bin"
+    export PYTHONPATH="$PYTHONPATH:$TOOLS_DIR/python"
     
-    # Configure PostgreSQL for Metasploit
-    if command -v postgresql &> /dev/null; then
-        systemctl enable postgresql
-        systemctl start postgresql
-        msfdb init
-    fi
+    # Crear directorios necesarios
+    mkdir -p "$TOOLS_DIR/bin"
+    mkdir -p "$TOOLS_DIR/python"
+    mkdir -p "$TOOLS_DIR/ruby"
+    mkdir -p "$TOOLS_DIR/perl"
+    mkdir -p "$TOOLS_DIR/java"
     
-    # Configure network settings
-    sysctl -w net.ipv4.ip_forward=1
-    sysctl -w net.ipv6.conf.all.forwarding=1
+    # Configurar permisos
+    chmod -R 755 "$TOOLS_DIR"
+    chown -R "$(whoami)" "$TOOLS_DIR"
+}
+
+# Función para inicializar herramientas
+initialize_tools() {
+    local tools=($(ls "$TOOLS_DIR"))
+    local total_tools=${#tools[@]}
+    local current_tool=0
     
-    # Configure firewall
-    if command -v ufw &> /dev/null; then
-        ufw default deny incoming
-        ufw default allow outgoing
-        ufw enable
-    fi
+    for tool in "${tools[@]}"; do
+        current_tool=$((current_tool + 1))
+        local progress=$((current_tool * 100 / total_tools))
+        
+        echo -ne "\r${COLORS['CYAN']}["
+        for ((i=0; i<50; i++)); do
+            if [ $i -lt $((progress / 2)) ]; then
+                echo -ne "${ANIMATIONS['downloading'][$((i % ${#ANIMATIONS['downloading'][@]}))]}"
+            else
+                echo -ne " "
+            fi
+        done
+        echo -ne "] Inicializando $tool...${COLORS['NC']}"
+        
+        install_tool "$tool"
+    done
+    echo
+}
+
+# Función para encontrar el archivo principal de una herramienta
+find_main_file() {
+    local tool_dir=$1
+    local patterns=(
+        "*.sh"
+        "*.py"
+        "*.rb"
+        "*.jar"
+        "*.exe"
+        "main.*"
+        "run.*"
+        "start.*"
+        "init.*"
+        "setup.*"
+    )
     
-    # Configure ZSH and Oh My ZSH
-    if command -v zsh &> /dev/null; then
-        chsh -s /bin/zsh
-        if [ ! -d "$HOME/.oh-my-zsh" ]; then
-            sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    for pattern in "${patterns[@]}"; do
+        local file=$(find "$tool_dir" -type f -name "$pattern" | head -n 1)
+        if [ -n "$file" ]; then
+            echo "$file"
+            return 0
         fi
-    fi
+    done
     
-    # Configure system performance
-    sysctl -w vm.swappiness=10
-    sysctl -w vm.dirty_ratio=60
-    sysctl -w vm.dirty_background_ratio=2
-    
-    # Configure system limits
-    echo "* soft nofile 65535" >> /etc/security/limits.conf
-    echo "* hard nofile 65535" >> /etc/security/limits.conf
-    
-    log "SUCCESS" "Ajustes de Kali configurados correctamente"
+    return 1
 }
 
-# Enhanced Main Program
+# Función para ejecutar herramientas
+run_tool() {
+    local tool_name=$1
+    local tool_dir="$TOOLS_DIR/$tool_name"
+    
+    if [ ! -d "$tool_dir" ]; then
+        echo -e "${COLORS['RED']}${UNICODE['ERROR']} La herramienta $tool_name no está instalada${COLORS['NC']}"
+        return 1
+    fi
+    
+    echo -e "${COLORS['CYAN']}${UNICODE['TERMINAL']} Ejecutando $tool_name...${COLORS['NC']}"
+    
+    # Buscar el archivo principal
+    local main_file=$(find_main_file "$tool_dir")
+    
+    if [ -z "$main_file" ]; then
+        echo -e "${COLORS['RED']}${UNICODE['ERROR']} No se encontró el archivo principal de $tool_name${COLORS['NC']}"
+        echo -e "${COLORS['YELLOW']}Directorio: $tool_dir${COLORS['NC']}"
+        return 1
+    fi
+    
+    # Obtener la extensión del archivo
+    local extension="${main_file##*.}"
+    
+    # Hacer el archivo ejecutable si es necesario
+    if [[ "$extension" == "sh" || "$extension" == "py" || "$extension" == "rb" ]]; then
+        chmod +x "$main_file"
+    fi
+    
+    # Ejecutar el archivo según su extensión
+    case "$extension" in
+        "sh")
+            cd "$(dirname "$main_file")" && ./"$(basename "$main_file")"
+            ;;
+        "py")
+            cd "$(dirname "$main_file")" && python3 "$(basename "$main_file")"
+            ;;
+        "rb")
+            cd "$(dirname "$main_file")" && ruby "$(basename "$main_file")"
+            ;;
+        "jar")
+            cd "$(dirname "$main_file")" && java -jar "$(basename "$main_file")"
+            ;;
+        "exe")
+            cd "$(dirname "$main_file")" && wine "$(basename "$main_file")"
+            ;;
+        *)
+            cd "$(dirname "$main_file")" && ./"$(basename "$main_file")"
+            ;;
+    esac
+}
+
+# Función para instalar herramientas
+install_tool() {
+    local tool_name=$1
+    local tool_dir="$TOOLS_DIR/$tool_name"
+    
+    echo -e "${COLORS['CYAN']}Instalando $tool_name...${COLORS['NC']}"
+    
+    # Obtener el repositorio de GitHub
+    local repo_url="${GITHUB_REPOS[$tool_name]}"
+    if [ -z "$repo_url" ]; then
+        echo -e "${COLORS['RED']}${UNICODE['ERROR']} No se encontró el repositorio de GitHub para $tool_name${COLORS['NC']}"
+        return 1
+    fi
+    
+    # Crear directorio para la herramienta
+    mkdir -p "$tool_dir"
+    
+    # Clonar repositorio
+    echo -e "${COLORS['YELLOW']}Clonando repositorio: $repo_url${COLORS['NC']}"
+    git clone "$repo_url" "$tool_dir"
+    
+    # Instalar dependencias si existe requirements.txt
+    if [ -f "$tool_dir/requirements.txt" ]; then
+        echo -e "${COLORS['YELLOW']}Instalando dependencias de Python...${COLORS['NC']}"
+        pip install -r "$tool_dir/requirements.txt"
+    fi
+    
+    # Instalar dependencias si existe setup.py
+    if [ -f "$tool_dir/setup.py" ]; then
+        echo -e "${COLORS['YELLOW']}Instalando con setup.py...${COLORS['NC']}"
+        cd "$tool_dir" && python setup.py install
+    fi
+    
+    echo -e "${COLORS['GREEN']}$tool_name instalado correctamente${COLORS['NC']}"
+}
+
+# Función principal
 main() {
-    # Initialize
-    log "INFO" "Iniciando $TOOLKIT_NAME v$VERSION"
+    show_banner
+    show_loading_screen
     
-    # Check Kali Linux compatibility
-    if ! check_kali_linux; then
-        log "ERROR" "Este toolkit requiere Kali Linux"
-        exit 1
-    fi
-    
-    # Perform auto-diagnostic
-    perform_auto_diagnostic
-    
-    # Validate system
-    if ! validate_system; then
-        log "ERROR" "Validación del sistema fallida"
-        exit 1
-    fi
-    
-    # Create directory structure
-    create_directory_structure
-    
-    # Load configuration
-    load_configuration
-    
-    # Optimize performance
-    optimize_performance
-    
-    # Main loop
     while true; do
         show_main_menu
-        read -r option
-        
-        case $option in
-            1) handle_settings_menu ;;
-            2) handle_modules_menu ;;
-            3) handle_tools_menu ;;
-            4) handle_backup_menu ;;
-            5) handle_security_menu ;;
-            6) cleanup_and_exit 0 ;;
-            *) log "ERROR" "Opción inválida" ;;
-        esac
+        read -r choice
+        handle_tool_selection "$choice"
     done
 }
 
-# Start the program
+# Iniciar el toolkit
 main

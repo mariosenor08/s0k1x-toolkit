@@ -9,46 +9,44 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
-1. The above copyright notice and this permission notice shall be included in all
-   copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-2. The Software shall be used for ethical purposes only. Any use of the Software
-   for illegal activities, unauthorized penetration testing, or any form of
-   cybercrime is strictly prohibited.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
-3. The Software is provided "as is", without warranty of any kind, express or
-   implied, including but not limited to the warranties of merchantability,
-   fitness for a particular purpose and noninfringement. In no event shall the
-   authors or copyright holders be liable for any claim, damages or other
-   liability, whether in an action of contract, tort or otherwise, arising from,
-   out of or in connection with the Software or the use or other dealings in the
-   Software.
+Additional Terms and Conditions:
 
-4. Users of the Software must comply with all applicable laws and regulations
-   in their jurisdiction, including but not limited to:
-   - Computer Fraud and Abuse Act (CFAA)
-   - General Data Protection Regulation (GDPR)
-   - California Consumer Privacy Act (CCPA)
-   - Other relevant cybersecurity and privacy laws
+1. Ethical Use: This software is intended for ethical hacking, penetration testing,
+   and security research purposes only. Users must comply with all applicable laws
+   and regulations in their jurisdiction.
 
-5. The Software is intended for:
-   - Security professionals
-   - Ethical hackers
-   - Penetration testers
-   - Security researchers
-   - System administrators
-   - Other authorized security personnel
+2. Professional Conduct: Users must adhere to professional ethical standards and
+   obtain proper authorization before testing any systems or networks.
 
-6. The Software must not be used to:
-   - Conduct unauthorized penetration testing
-   - Perform illegal hacking activities
-   - Compromise systems without explicit permission
-   - Violate privacy rights
-   - Conduct any form of cybercrime
+3. No Malicious Use: The software shall not be used for any malicious, illegal,
+   or unauthorized activities.
 
-By using the Software, you agree to these terms and conditions. If you do not
-agree with these terms, you are not permitted to use the Software.
+4. Attribution: When using or distributing this software, proper attribution to
+   the SOKIX Security Team must be maintained.
 
-For questions about this license, please contact:
-- Email: legal@sokix.com
-- Website: https://sokix.com/legal 
+5. Security Research: Users are encouraged to report any vulnerabilities or
+   security issues found in the software to the SOKIX Security Team.
+
+6. Updates and Support: The SOKIX Security Team reserves the right to modify,
+   update, or discontinue support for the software at any time.
+
+7. Compliance: Users must ensure compliance with all applicable export control
+   laws and regulations.
+
+8. Professional Responsibility: Users are responsible for their actions and must
+   ensure they have the necessary permissions and authorizations before using
+   this software.
+
+For any questions regarding this license or the software, please contact:
+contact@sokix-security.com 
