@@ -860,49 +860,253 @@ show_system_info() {
 
 # Función para realizar el diagnóstico del sistema
 perform_diagnostic() {
-    for check in "${!DIAGNOSTIC_CHECKS[@]}"; do
-        echo -ne "\r${COLORS['CYAN']}["
-        for ((i=0; i<50; i++)); do
-            echo -ne "${ANIMATIONS['scanning'][$((i % ${#ANIMATIONS['scanning'][@]}))]}"
-        done
-        echo -ne "] ${DIAGNOSTIC_CHECKS[$check]}...${COLORS['NC']}"
-        
-        case $check in
-            "system")
-                check_system
-                ;;
-            "network")
-                check_network
-                ;;
-            "security")
-                check_security
-                ;;
-            "performance")
-                check_performance
-                ;;
-            "dependencies")
-                check_dependencies
-                ;;
-            "tools")
-                check_tools
-                ;;
-            "permissions")
-                check_permissions
-                ;;
-            "storage")
-                check_storage
-                ;;
-            "memory")
-                check_memory
-                ;;
-            "cpu")
-                check_cpu
-                ;;
-        esac
-        
-        sleep 0.5
+    local total_checks=10
+    local current_check=0
+    local success_count=0
+    local warning_count=0
+    local error_count=0
+
+    echo -e "\n${COLORS['PURPLE']}${UNICODE['BORDER_TOP']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['CYAN']}${UNICODE['MAGNIFIER']} Iniciando diagnóstico del sistema... ${COLORS['NC']}${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+
+    # 1. Verificar sistema operativo
+    current_check=$((current_check + 1))
+    echo -ne "\r${COLORS['CYAN']}[$current_check/$total_checks] Verificando sistema operativo...${COLORS['NC']}"
+    if check_os; then
+        success_count=$((success_count + 1))
+        echo -e "\r${COLORS['GREEN']}${UNICODE['SUCCESS']} Sistema operativo compatible${COLORS['NC']}"
+    else
+        error_count=$((error_count + 1))
+        echo -e "\r${COLORS['RED']}${UNICODE['ERROR']} Sistema operativo no compatible${COLORS['NC']}"
+    fi
+
+    # 2. Verificar memoria RAM
+    current_check=$((current_check + 1))
+    echo -ne "\r${COLORS['CYAN']}[$current_check/$total_checks] Verificando memoria RAM...${COLORS['NC']}"
+    if check_memory; then
+        success_count=$((success_count + 1))
+        echo -e "\r${COLORS['GREEN']}${UNICODE['SUCCESS']} Memoria RAM suficiente${COLORS['NC']}"
+    else
+        warning_count=$((warning_count + 1))
+        echo -e "\r${COLORS['YELLOW']}${UNICODE['WARNING']} Memoria RAM insuficiente${COLORS['NC']}"
+    fi
+
+    # 3. Verificar almacenamiento
+    current_check=$((current_check + 1))
+    echo -ne "\r${COLORS['CYAN']}[$current_check/$total_checks] Verificando almacenamiento...${COLORS['NC']}"
+    if check_storage; then
+        success_count=$((success_count + 1))
+        echo -e "\r${COLORS['GREEN']}${UNICODE['SUCCESS']} Almacenamiento suficiente${COLORS['NC']}"
+    else
+        warning_count=$((warning_count + 1))
+        echo -e "\r${COLORS['YELLOW']}${UNICODE['WARNING']} Almacenamiento insuficiente${COLORS['NC']}"
+    fi
+
+    # 4. Verificar CPU
+    current_check=$((current_check + 1))
+    echo -ne "\r${COLORS['CYAN']}[$current_check/$total_checks] Verificando CPU...${COLORS['NC']}"
+    if check_cpu; then
+        success_count=$((success_count + 1))
+        echo -e "\r${COLORS['GREEN']}${UNICODE['SUCCESS']} CPU compatible${COLORS['NC']}"
+    else
+        warning_count=$((warning_count + 1))
+        echo -e "\r${COLORS['YELLOW']}${UNICODE['WARNING']} CPU no recomendada${COLORS['NC']}"
+    fi
+
+    # 5. Verificar red
+    current_check=$((current_check + 1))
+    echo -ne "\r${COLORS['CYAN']}[$current_check/$total_checks] Verificando conexión de red...${COLORS['NC']}"
+    if check_network; then
+        success_count=$((success_count + 1))
+        echo -e "\r${COLORS['GREEN']}${UNICODE['SUCCESS']} Conexión de red estable${COLORS['NC']}"
+    else
+        error_count=$((error_count + 1))
+        echo -e "\r${COLORS['RED']}${UNICODE['ERROR']} Problemas de conexión${COLORS['NC']}"
+    fi
+
+    # 6. Verificar dependencias
+    current_check=$((current_check + 1))
+    echo -ne "\r${COLORS['CYAN']}[$current_check/$total_checks] Verificando dependencias...${COLORS['NC']}"
+    if check_dependencies; then
+        success_count=$((success_count + 1))
+        echo -e "\r${COLORS['GREEN']}${UNICODE['SUCCESS']} Dependencias instaladas${COLORS['NC']}"
+    else
+        error_count=$((error_count + 1))
+        echo -e "\r${COLORS['RED']}${UNICODE['ERROR']} Faltan dependencias${COLORS['NC']}"
+    fi
+
+    # 7. Verificar permisos
+    current_check=$((current_check + 1))
+    echo -ne "\r${COLORS['CYAN']}[$current_check/$total_checks] Verificando permisos...${COLORS['NC']}"
+    if check_permissions; then
+        success_count=$((success_count + 1))
+        echo -e "\r${COLORS['GREEN']}${UNICODE['SUCCESS']} Permisos correctos${COLORS['NC']}"
+    else
+        error_count=$((error_count + 1))
+        echo -e "\r${COLORS['RED']}${UNICODE['ERROR']} Problemas de permisos${COLORS['NC']}"
+    fi
+
+    # 8. Verificar directorios
+    current_check=$((current_check + 1))
+    echo -ne "\r${COLORS['CYAN']}[$current_check/$total_checks] Verificando directorios...${COLORS['NC']}"
+    if check_directories; then
+        success_count=$((success_count + 1))
+        echo -e "\r${COLORS['GREEN']}${UNICODE['SUCCESS']} Directorios correctos${COLORS['NC']}"
+    else
+        error_count=$((error_count + 1))
+        echo -e "\r${COLORS['RED']}${UNICODE['ERROR']} Problemas con directorios${COLORS['NC']}"
+    fi
+
+    # 9. Verificar herramientas
+    current_check=$((current_check + 1))
+    echo -ne "\r${COLORS['CYAN']}[$current_check/$total_checks] Verificando herramientas...${COLORS['NC']}"
+    if check_tools; then
+        success_count=$((success_count + 1))
+        echo -e "\r${COLORS['GREEN']}${UNICODE['SUCCESS']} Herramientas instaladas${COLORS['NC']}"
+    else
+        warning_count=$((warning_count + 1))
+        echo -e "\r${COLORS['YELLOW']}${UNICODE['WARNING']} Faltan algunas herramientas${COLORS['NC']}"
+    fi
+
+    # 10. Verificar configuración
+    current_check=$((current_check + 1))
+    echo -ne "\r${COLORS['CYAN']}[$current_check/$total_checks] Verificando configuración...${COLORS['NC']}"
+    if check_configuration; then
+        success_count=$((success_count + 1))
+        echo -e "\r${COLORS['GREEN']}${UNICODE['SUCCESS']} Configuración correcta${COLORS['NC']}"
+    else
+        warning_count=$((warning_count + 1))
+        echo -e "\r${COLORS['YELLOW']}${UNICODE['WARNING']} Configuración incompleta${COLORS['NC']}"
+    fi
+
+    # Mostrar resumen
+    echo -e "\n${COLORS['PURPLE']}${UNICODE['BORDER_MIDDLE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['CYAN']}Resumen del diagnóstico:${COLORS['NC']} ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['GREEN']}Éxitos: $success_count${COLORS['NC']} ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['YELLOW']}Advertencias: $warning_count${COLORS['NC']} ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']} ${COLORS['RED']}Errores: $error_count${COLORS['NC']} ${COLORS['PURPLE']}${UNICODE['BORDER_SIDE']}${COLORS['NC']}"
+    echo -e "${COLORS['PURPLE']}${UNICODE['BORDER_BOTTOM']}${COLORS['NC']}"
+
+    # Retornar estado
+    if [ $error_count -gt 0 ]; then
+        return 1
+    elif [ $warning_count -gt 0 ]; then
+        return 2
+    else
+        return 0
+    fi
+}
+
+# Función para verificar el sistema operativo
+check_os() {
+    case "$(uname -s)" in
+        Linux)
+            # Verificar distribución
+            if [ -f /etc/os-release ]; then
+                . /etc/os-release
+                case "$ID" in
+                    ubuntu|debian|kali)
+                        return 0
+                        ;;
+                    *)
+                        return 1
+                        ;;
+                esac
+            fi
+            ;;
+        Darwin)
+            # Verificar versión de macOS
+            if [ "$(sw_vers -productVersion | cut -d. -f1)" -ge 10 ]; then
+                return 0
+            fi
+            ;;
+        MINGW*|MSYS*|CYGWIN*)
+            # Verificar versión de Windows
+            if [ "$(uname -r | cut -d- -f1)" -ge 10 ]; then
+                return 0
+            fi
+            ;;
+    esac
+    return 1
+}
+
+# Función para verificar memoria RAM
+check_memory() {
+    local min_ram=4000  # 4GB en MB
+    local total_ram=$(free -m | awk '/^Mem:/{print $2}')
+    
+    if [ "$total_ram" -ge "$min_ram" ]; then
+        return 0
+    fi
+    return 1
+}
+
+# Función para verificar almacenamiento
+check_storage() {
+    local min_storage=20000  # 20GB en MB
+    local available_storage=$(df -m / | awk 'NR==2 {print $4}')
+    
+    if [ "$available_storage" -ge "$min_storage" ]; then
+        return 0
+    fi
+    return 1
+}
+
+# Función para verificar CPU
+check_cpu() {
+    local min_cores=2
+    local cores=$(nproc)
+    
+    if [ "$cores" -ge "$min_cores" ]; then
+        return 0
+    fi
+    return 1
+}
+
+# Función para verificar red
+check_network() {
+    if ping -c 1 google.com &> /dev/null; then
+        return 0
+    fi
+    return 1
+}
+
+# Función para verificar directorios
+check_directories() {
+    local required_dirs=(
+        "$TOOLS_DIR"
+        "$MODULES_DIR"
+        "$SCRIPTS_DIR"
+        "$CACHE_DIR"
+        "$TEMP_DIR"
+        "$BACKUP_DIR"
+        "$REPORTS_DIR"
+    )
+    
+    for dir in "${required_dirs[@]}"; do
+        if [ ! -d "$dir" ]; then
+            mkdir -p "$dir" || return 1
+        fi
+        if [ ! -w "$dir" ]; then
+            return 1
+        fi
     done
-    echo
+    return 0
+}
+
+# Función para verificar configuración
+check_configuration() {
+    if [ ! -f "$CONFIG_FILE" ]; then
+        create_default_config || return 1
+    fi
+    
+    # Verificar permisos del archivo de configuración
+    if [ ! -r "$CONFIG_FILE" ] || [ ! -w "$CONFIG_FILE" ]; then
+        return 1
+    fi
+    
+    return 0
 }
 
 # Función para mostrar la carga de módulos con animación
@@ -1010,36 +1214,6 @@ check_permissions() {
     return 0
 }
 
-check_storage() {
-    # Check available storage
-    local available_space=$(df -h / | awk 'NR==2 {print $4}')
-    if [ "${available_space%G}" -lt 5 ]; then
-        echo -e "${COLORS['YELLOW']}Low disk space: $available_space${COLORS['NC']}"
-        return 1
-    fi
-    return 0
-}
-
-check_memory() {
-    # Check available memory
-    local available_mem=$(free -m | awk 'NR==2 {print $7}')
-    if [ "$available_mem" -lt 1024 ]; then
-        echo -e "${COLORS['YELLOW']}Low memory: ${available_mem}MB${COLORS['NC']}"
-        return 1
-    fi
-    return 0
-}
-
-check_cpu() {
-    # Check CPU usage
-    local cpu_usage=$(top -bn1 | grep "Cpu(s)" | awk '{print $2}')
-    if (( $(echo "$cpu_usage > 80" | bc -l) )); then
-        echo -e "${COLORS['YELLOW']}High CPU usage: ${cpu_usage}%${COLORS['NC']}"
-        return 1
-    fi
-    return 0
-}
-
 # Función para mostrar progreso con animación
 show_progress() {
     local message=$1
@@ -1048,11 +1222,12 @@ show_progress() {
     local width=50
     local progress=$((current * width / total))
     local remaining=$((width - progress))
+    local hacking_animation=${ANIMATIONS['hacking']}
     
     echo -ne "\r${COLORS['CYAN']}["
     for ((i=0; i<progress; i++)); do
-        local animation_index=$((i % ${#ANIMATIONS['hacking']}))
-        echo -ne "${ANIMATIONS['hacking'][$animation_index]}"
+        local animation_index=$((i % ${#hacking_animation}))
+        echo -ne "${hacking_animation:$animation_index:1}"
     done
     for ((i=0; i<remaining; i++)); do
         echo -ne " "

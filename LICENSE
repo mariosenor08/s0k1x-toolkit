@@ -2,51 +2,65 @@ MIT License
 
 Copyright (c) 2024 SOKIX Security Team
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Se concede permiso, de forma gratuita, a cualquier persona que obtenga una copia
+de este software y de los archivos de documentación asociados (el "Software"), para
+tratar el Software sin restricción, incluyendo sin limitación los derechos
+de uso, copia, modificación, fusión, publicación, distribución, sublicencia y/o
+venta de copias del Software, y para permitir a las personas a las que se les
+proporcione el Software a hacer lo mismo, sujeto a las siguientes condiciones:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+El aviso de copyright anterior y este aviso de permiso se incluirán en todas
+las copias o partes sustanciales del Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+EL SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O
+IMPLÍCITA, INCLUYENDO PERO NO LIMITADO A GARANTÍAS DE COMERCIALIZACIÓN,
+IDONEIDAD PARA UN PROPÓSITO PARTICULAR Y NO INFRACCIÓN. EN NINGÚN CASO LOS
+AUTORES O TITULARES DEL COPYRIGHT SERÁN RESPONSABLES DE NINGUNA RECLAMACIÓN,
+DAÑOS U OTRAS RESPONSABILIDADES, YA SEA EN UNA ACCIÓN DE CONTRATO, AGRAVIO O
+CUALQUIER OTRO MOTIVO, QUE SURJA DE O EN CONEXIÓN CON EL SOFTWARE O EL USO U
+OTRO TIPO DE ACCIONES EN EL SOFTWARE.
 
-Additional Terms and Conditions:
+Términos y Condiciones Adicionales:
 
-1. Ethical Use: This software is intended for ethical hacking, penetration testing,
-   and security research purposes only. Users must comply with all applicable laws
-   and regulations in their jurisdiction.
+1. Uso Ético
+   - Este software está diseñado únicamente para pruebas de penetración autorizadas
+   - No se permite su uso para actividades maliciosas o no autorizadas
+   - El usuario es responsable de cumplir con todas las leyes y regulaciones aplicables
 
-2. Professional Conduct: Users must adhere to professional ethical standards and
-   obtain proper authorization before testing any systems or networks.
+2. Conducta Profesional
+   - Se espera que los usuarios mantengan estándares profesionales
+   - No se tolerará el uso inapropiado o no ético
+   - Se debe respetar la privacidad y los derechos de terceros
 
-3. No Malicious Use: The software shall not be used for any malicious, illegal,
-   or unauthorized activities.
+3. Uso No Malicioso
+   - Prohibido el uso para ataques o actividades dañinas
+   - No se permite la explotación de vulnerabilidades sin autorización
+   - Se debe obtener permiso antes de realizar pruebas en sistemas ajenos
 
-4. Attribution: When using or distributing this software, proper attribution to
-   the SOKIX Security Team must be maintained.
+4. Atribución
+   - Se debe dar crédito apropiado al equipo SOKIX
+   - No se permite la eliminación o modificación de avisos de copyright
+   - Se debe incluir la licencia en todas las distribuciones
 
-5. Security Research: Users are encouraged to report any vulnerabilities or
-   security issues found in the software to the SOKIX Security Team.
+5. Investigación de Seguridad
+   - Se fomenta la investigación de seguridad responsable
+   - Se debe seguir el proceso de divulgación responsable
+   - Se deben reportar vulnerabilidades a security@sokix-security.com
 
-6. Updates and Support: The SOKIX Security Team reserves the right to modify,
-   update, or discontinue support for the software at any time.
+6. Actualizaciones y Soporte
+   - No se garantiza soporte técnico
+   - Las actualizaciones se proporcionan según disponibilidad
+   - Se recomienda mantener el software actualizado
 
-7. Compliance: Users must ensure compliance with all applicable export control
-   laws and regulations.
+7. Cumplimiento
+   - El usuario es responsable de verificar la legalidad de su uso
+   - Se debe obtener autorización antes de realizar pruebas
+   - Se deben seguir las mejores prácticas de seguridad
 
-8. Professional Responsibility: Users are responsible for their actions and must
-   ensure they have the necessary permissions and authorizations before using
-   this software.
+8. Responsabilidad Profesional
+   - Se espera que los usuarios actúen de manera ética
+   - Se debe proteger la confidencialidad de la información
+   - Se deben seguir los estándares de la industria
 
-For any questions regarding this license or the software, please contact:
+Para consultas sobre la licencia, contacte a:
 contact@sokix-security.com 
